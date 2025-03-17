@@ -1,0 +1,3503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>12 Principles of Animation</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --dark: #34495e;
+            --light: #ecf0f1;
+            --accent: #e74c3c;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light);
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        .principles-nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .principle-btn {
+            background-color: var(--dark);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .principle-btn:hover {
+            background-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .principle-btn.active {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .content-area {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .principle-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .principle-content.active {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .animation-container {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .animation-header {
+            background-color: var(--dark);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .animation-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .animation-header .controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .control-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            background-color: var(--secondary);
+        }
+        
+        .animation-display {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .animation-stage {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .explanation {
+            padding: 1rem;
+            background-color: var(--light);
+            border-radius: 4px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        canvas {
+            display: block;
+            margin: 0 auto;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: var(--dark);
+            color: white;
+            margin-top: 2rem;
+        }
+        
+        /* Animation-specific styles */
+        .ball {
+            width: 50px;
+            height: 50px;
+            background-color: var(--accent);
+            border-radius: 50%;
+            position: absolute;
+        }
+        
+        .character {
+            width: 80px;
+            height: 120px;
+            position: absolute;
+        }
+        
+        .box {
+            width: 80px;
+            height: 80px;
+            background-color: var(--primary);
+            position: absolute;
+        }
+        
+        @media (min-width: 768px) {
+            .content-area {
+                flex-direction: row;
+            }
+            
+            .principle-content.active {
+                flex-direction: row;
+                gap: 2rem;
+            }
+            
+            .animation-container {
+                flex: 1;
+            }
+            
+            .explanation {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>The 12 Principles of Animation</h1>
+        <p>An interactive learning tool for animators</p>
+    </header>
+    
+    <main>
+        <div class="principles-nav">
+            <button class="principle-btn active" data-principle="squash">1. Squash & Stretch</button>
+            <button class="principle-btn" data-principle="anticipation">2. Anticipation</button>
+            <button class="principle-btn" data-principle="staging">3. Staging</button>
+            <button class="principle-btn" data-principle="straight">4. Straight Ahead & Pose to Pose</button>
+            <button class="principle-btn" data-principle="follow">5. Follow Through</button>
+            <button class="principle-btn" data-principle="slow">6. Slow In & Slow Out</button>
+            <button class="principle-btn" data-principle="arc">7. Arc</button>
+            <button class="principle-btn" data-principle="secondary">8. Secondary Action</button>
+            <button class="principle-btn" data-principle="timing">9. Timing</button>
+            <button class="principle-btn" data-principle="exaggeration">10. Exaggeration</button>
+            <button class="principle-btn" data-principle="solid">11. Solid Drawing</button>
+            <button class="principle-btn" data-principle="appeal">12. Appeal</button>
+        </div>
+        
+        <div class="content-area">
+            <!-- Squash & Stretch -->
+            <div class="principle-content active" id="squash">
+                <div class="animation-container">
+                    <div class="animation-header">
+                        <h2>Squash & Stretch</h2>
+                        <div class="controls">
+                            <button class="control-btn play-btn">Play</button>
+                            <button class="control-btn reset-btn">Reset</button>
+                        </div>
+                    </div>
+                    <div class="animation-display">
+                        <div class="animation-stage" id="squash-stage">
+                            <canvas id="squash-canvas" width="600" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="explanation">
+                    <h3>Squash & Stretch</h3>
+                    <p>This principle gives objects weight and flexibility. When an object moves, it stretches in the direction of movement and squashes upon impact or change of direction.</p>
+                    <p>In this example, notice how the ball:</p>
+                    <ul>
+                        <li>Stretches vertically when falling (gaining speed)</li>
+                        <li>Squashes horizontally upon impact with the ground</li>
+                        <li>Stretches again as it bounces upward</li>
+                    </ul>
+                    <p>The key insight: while the shape changes, the volume remains consistent. This makes the animation feel physically authentic.</p>
+                </div>
+            </div>
+            
+            <!-- Anticipation -->
+            <div class="principle-content" id="anticipation">
+                <div class="animation-container">
+                    <div class="animation-header">
+                        <h2>Anticipation</h2>
+                        <div class="controls">
+                            <button class="control-btn play-btn">Play</button>
+                            <button class="control-btn reset-btn">Reset</button>
+                        </div>
+                    </div>
+                    <div class="animation-display">
+                        <div class="animation-stage" id="anticipation-stage">
+                            <canvas id="anticipation-canvas" width="600" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="explanation">
+                    <h3>Anticipation</h3>
+                    <p>Anticipation prepares the viewer for an action and makes the action more realistic. Before a major action, there's typically a smaller, opposite action.</p>
+                    <p>In this example, observe how:</p>
+                    <ul>
+                        <li>The character crouches down (anticipation) before jumping upward</li>
+                        <li>This preparatory movement signals to viewers what's about to happen</li>
+                        <li>Without anticipation, the jump would feel sudden and unnatural</li>
+                    </ul>
+                    <p>Anticipation helps guide the viewer's eye to where the action will take place and creates more believable movement.</p>
+                </div>
+            </div>
+            
+            <!-- Staging -->
+            <div class="principle-content" id="staging">
+                <div class="animation-container">
+                    <div class="animation-header">
+                        <h2>Staging</h2>
+                        <div class="controls">
+                            <button class="control-btn play-btn">Play</button>
+                            <button class="control-btn reset-btn">Reset</button>
+                        </div>
+                    </div>
+                    <div class="animation-display">
+                        <div class="animation-stage" id="staging-stage">
+                            <canvas id="staging-canvas" width="600" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="explanation">
+                    <h3>Staging</h3>
+                    <p>Staging is about presenting an idea clearly. The main action should be unmistakable and the viewer's attention should be exactly where you want it.</p>
+                    <p>In this example, notice how:</p>
+                    <ul>
+                        <li>The important element is highlighted while everything else fades back</li>
+                        <li>The composition draws your eye directly to the focal point</li>
+                        <li>The action is presented from an angle that makes it most readable</li>
+                    </ul>
+                    <p>Good staging ensures that the audience understands exactly what's happening and doesn't miss important story points or actions.</p>
+                </div>
+            </div>
+            
+            <!-- Straight Ahead & Pose to Pose -->
+            <div class="principle-content" id="straight">
+                <div class="animation-container">
+                    <div class="animation-header">
+                        <h2>Straight Ahead & Pose to Pose</h2>
+                        <div class="controls">
+                            <button class="control-btn play-btn">Play</button>
+                            <button class="control-btn reset-btn">Reset</button>
+                        </div>
+                    </div>
+                    <div class="animation-display">
+                        <div class="animation-stage" id="straight-stage">
+                            <canvas id="straight-canvas" width="600" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="explanation">
+                    <h3>Straight Ahead & Pose to Pose</h3>
+                    <p>These are two different approaches to creating animation:</p>
+                    <ul>
+                        <li><strong>Straight Ahead:</strong> Drawing each frame sequentially from start to finish. This creates more fluid, dynamic action.</li>
+                        <li><strong>Pose to Pose:</strong> Creating key poses first, then filling in the transitions. This provides more control and structure.</li>
+                    </ul>
+                    <p>In this example, you can see both approaches demonstrated side by side. The left animation shows straight ahead (more spontaneous), while the right shows pose to pose (more planned).</p>
+                    <p>Most animation uses a combination of both methods, depending on what's needed for a particular scene.</p>
+                </div>
+            </div>
+            
+            <!-- Follow Through -->
+            <div class="principle-content" id="follow">
+                <div class="animation-container">
+                    <div class="animation-header">
+                        <h2>Follow Through & Overlapping Action</h2>
+                        <div class="controls">
+                            <button class="control-btn play-btn">Play</button>
+                            <button class="control-btn reset-btn">Reset</button>
+                        </div>
+                    </div>
+                    <div class="animation-display">
+                        <div class="animation-stage" id="follow-stage">
+                            <canvas id="follow-canvas" width="600" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="explanation">
+                    <h3>Follow Through & Overlapping Action</h3>
+                    <p>This principle deals with the fact that different parts of an object don't stop moving all at once.</p>
+                    <p>Key aspects include:</p>
+                    <ul>
+                        <li><strong>Follow Through:</strong> Parts of an object continue to move after the main body stops</li>
+                        <li><strong>Overlapping Action:</strong> Different parts of an object move at different rates</li>
+                        <li><strong>Drag:</strong> Parts may lag behind the leading element</li>
+                    </ul>
+                    <p>In this example, notice how the character's hair, clothing, and limbs continue to move after the main body stops, creating a more realistic and fluid motion.</p>
+                </div>
+            </div>
+            
+            <!-- Slow In & Slow Out -->
+            <div class="principle-content" id="slow">
+                <div class="animation-container">
+                    <div class="animation-header">
+                        <h2>Slow In & Slow Out</h2>
+                        <div class="controls">
+                            <button class="control-btn play-btn">Play</button>
+                            <button class="control-btn reset-btn">Reset</button>
+                        </div>
+                    </div>
+                    <div class="animation-display">
+                        <div class="animation-stage" id="slow-stage">
+                            <canvas id="slow-canvas" width="600" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="explanation">
+                    <h3>Slow In & Slow Out</h3>
+                    <p>Also known as "easing," this principle recognizes that objects don't start or stop instantly but accelerate and decelerate gradually.</p>
+                    <p>In this example, observe:</p>
+                    <ul>
+                        <li>The left ball moves at a constant speed (no easing)</li>
+                        <li>The right ball starts slowly, reaches peak speed in the middle, and slows down at the end</li>
+                    </ul>
+                    <p>The right ball's movement feels much more natural because it follows the physical principle that objects need time to accelerate and decelerate. This principle is accomplished by spacing frames closer together at the beginning and end of an action, and further apart in the middle.</p>
+                </div>
+            </div>
+            
+            <!-- Arc -->
+            <div class="principle-content" id="arc">
+                <div class="animation-container">
+                    <div class="animation-header">
+                        <h2>Arc</h2>
+                        <div class="controls">
+                            <button class="control-btn play-btn">Play</button>
+                            <button class="control-btn reset-btn">Reset</button>
+                        </div>
+                    </div>
+                    <div class="animation-display">
+                        <div class="animation-stage" id="arc-stage">
+                            <canvas id="arc-canvas" width="600" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="explanation">
+                    <h3>Arc</h3>
+                    <p>Most natural action follows curved paths rather than straight lines. Arcs make animation more fluid and natural.</p>
+                    <p>In this example, compare:</p>
+                    <ul>
+                        <li>The red ball moving in a straight line (mechanical, robotic)</li>
+                        <li>The blue ball moving in an arc (organic, natural)</li>
+                    </ul>
+                    <p>Living creatures especially move in arcs because of joint rotation and the effects of gravity. Even mechanical objects often move in arcs due to physical constraints. Using arcs in your animation will give life and organic quality to your characters and objects.</p>
+                </div>
+            </div>
+            
+            <!-- Secondary Action -->
+            <div class="principle-content" id="secondary">
+                <div class="animation-container">
+                    <div class="animation-header">
+                        <h2>Secondary Action</h2>
+                        <div class="controls">
+                            <button class="control-btn play-btn">Play</button>
+                            <button class="control-btn reset-btn">Reset</button>
+                        </div>
+                    </div>
+                    <div class="animation-display">
+                        <div class="animation-stage" id="secondary-stage">
+                            <canvas id="secondary-canvas" width="600" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="explanation">
+                    <h3>Secondary Action</h3>
+                    <p>Secondary actions are additional movements that support and enhance the main action, adding more dimension to your animation.</p>
+                    <p>In this example, observe:</p>
+                    <ul>
+                        <li>The primary action is the character walking</li>
+                        <li>The secondary action is the swinging arms and tail movement</li>
+                    </ul>
+                    <p>Secondary actions should never dominate or distract from the main action. Instead, they should work to complement and enrich it. They add complexity and interest to the animation, making it feel more alive and nuanced.</p>
+                </div>
+            </div>
+            
+            <!-- Timing -->
+            <div class="principle-content" id="timing">
+                <div class="animation-container">
+                    <div class="animation-header">
+                        <h2>Timing</h2>
+                        <div class="controls">
+                            <button class="control-btn play-btn">Play</button>
+                            <button class="control-btn reset-btn">Reset</button>
+                        </div>
+                    </div>
+                    <div class="animation-display">
+                        <div class="animation-stage" id="timing-stage">
+                            <canvas id="timing-canvas" width="600" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="explanation">
+                    <h3>Timing</h3>
+                    <p>Timing refers to the number of frames used for an action, which controls the speed and feel of the movement.</p>
+                    <p>In this example, notice how:</p>
+                    <ul>
+                        <li>The first ball moves quickly (fewer frames)</li>
+                        <li>The second ball moves at medium speed</li>
+                        <li>The third ball moves slowly (more frames)</li>
+                    </ul>
+                    <p>Proper timing gives meaning to movement. Fast movements suggest urgency or lightness, while slower movements suggest weight or thoughtfulness. Timing is crucial for establishing a character's mood, emotion, and reaction to their environment.</p>
+                </div>
+            </div>
+            
+            <!-- Exaggeration -->
+            <div class="principle-content" id="exaggeration">
+                <div class="animation-container">
+                    <div class="animation-header">
+                        <h2>Exaggeration</h2>
+                        <div class="controls">
+                            <button class="control-btn play-btn">Play</button>
+                            <button class="control-btn reset-btn">Reset</button>
+                        </div>
+                    </div>
+                    <div class="animation-display">
+                        <div class="animation-stage" id="exaggeration-stage">
+                            <canvas id="exaggeration-canvas" width="600" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="explanation">
+                    <h3>Exaggeration</h3>
+                    <p>Exaggeration amplifies the essence of an idea via the design and action, making it more dynamic and interesting.</p>
+                    <p>In this example, compare:</p>
+                    <ul>
+                        <li>The left animation shows a realistic jump</li>
+                        <li>The right animation shows an exaggerated jump with more extreme poses</li>
+                    </ul>
+                    <p>Exaggeration doesn't mean arbitrary distortion but rather emphasizing the core elements of an action or expression. It's about capturing the essence of a movement and making it more readable and appealing to the audience. The amount of exaggeration should be carefully balanced to suit the style of your animation.</p>
+                </div>
+            </div>
+            
+            <!-- Solid Drawing -->
+            <div class="principle-content" id="solid">
+                <div class="animation-container">
+                    <div class="animation-header">
+                        <h2>Solid Drawing</h2>
+                        <div class="controls">
+                            <button class="control-btn play-btn">Play</button>
+                            <button class="control-btn reset-btn">Reset</button>
+                        </div>
+                    </div>
+                    <div class="animation-display">
+                        <div class="animation-stage" id="solid-stage">
+                            <canvas id="solid-canvas" width="600" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="explanation">
+                    <h3>Solid Drawing</h3>
+                    <p>Solid drawing emphasizes the importance of understanding three-dimensional form, weight, volume, and the principles of drawing.</p>
+                    <p>Key aspects include:</p>
+                    <ul>
+                        <li>Creating a sense of volume and weight in your drawings</li>
+                        <li>Understanding how forms exist in 3D space</li>
+                        <li>Avoiding "twins" (identical poses on both sides of the body)</li>
+                    </ul>
+                    <p>In this example, notice how the character maintains consistent volume while rotating in 3D space. Even though animation can be stylized, understanding how forms work in three dimensions is essential for creating convincing movement.</p>
+                </div>
+            </div>
+            
+            <!-- Appeal -->
+            <div class="principle-content" id="appeal">
+                <div class="animation-container">
+                    <div class="animation-header">
+                        <h2>Appeal</h2>
+                        <div class="controls">
+                            <button class="control-btn play-btn">Play</button>
+                            <button class="control-btn reset-btn">Reset</button>
+                        </div>
+                    </div>
+                    <div class="animation-display">
+                        <div class="animation-stage" id="appeal-stage">
+                            <canvas id="appeal-canvas" width="600" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="explanation">
+                    <h3>Appeal</h3>
+                    <p>Appeal refers to creating designs and movements that are interesting to look at and connect with viewers emotionally.</p>
+                    <p>Elements of appeal include:</p>
+                    <ul>
+                        <li>Charm, simplicity, and magnetism in character design</li>
+                        <li>Clear silhouettes and distinctive shapes</li>
+                        <li>Personality expressed through movement</li>
+                    </ul>
+                    <p>In this example, notice how different character designs evoke different emotional responses. Appeal doesn't mean just being cute—villains, monsters, and other characters should all have appeal appropriate to their role. Appeal is what draws the audience in and makes them care about what they're watching.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>Animation Principles Learning Tool © 2025</p>
+    </footer>
+    
+    <script>
+        // DOM Elements and Utility Functions
+        const principleButtons = document.querySelectorAll('.principle-btn');
+        const principleContents = document.querySelectorAll('.principle-content');
+        const playButtons = document.querySelectorAll('.play-btn');
+        const resetButtons = document.querySelectorAll('.reset-btn');
+        
+        // Animation States
+        const animationStates = {
+            squash: { playing: false, animation: null, frame: 0 },
+            anticipation: { playing: false, animation: null, frame: 0 },
+            staging: { playing: false, animation: null, frame: 0 },
+            straight: { playing: false, animation: null, frame: 0 },
+            follow: { playing: false, animation: null, frame: 0 },
+            slow: { playing: false, animation: null, frame: 0 },
+            arc: { playing: false, animation: null, frame: 0 },
+            secondary: { playing: false, animation: null, frame: 0 },
+            timing: { playing: false, animation: null, frame: 0 },
+            exaggeration: { playing: false, animation: null, frame: 0 },
+            solid: { playing: false, animation: null, frame: 0 },
+            appeal: { playing: false, animation: null, frame: 0 }
+        };
+        
+        // Navigation
+        principleButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const principle = button.getAttribute('data-principle');
+                
+                // Update active button
+                principleButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                // Update active content
+                principleContents.forEach(content => content.classList.remove('active'));
+                document.getElementById(principle).classList.add('active');
+                
+                // Pause any running animations
+                Object.keys(animationStates).forEach(key => {
+                    const state = animationStates[key];
+                    if (state.playing) {
+                        state.playing = false;
+                        if (state.animation) {
+                            cancelAnimationFrame(state.animation);
+                            state.animation = null;
+                        }
+                    }
+                });
+                
+                // Update play button texts
+                playButtons.forEach(btn => btn.textContent = 'Play');
+                
+                // Initialize the current animation if not already
+                initializeAnimation(principle);
+            });
+        });
+        
+        // Animation Controls
+        playButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                const container = button.closest('.principle-content');
+                const principle = container.id;
+                const state = animationStates[principle];
+                
+                if (state.playing) {
+                    // Pause animation
+                    state.playing = false;
+                    if (state.animation) {
+                        cancelAnimationFrame(state.animation);
+                        state.animation = null;
+                    }
+                    button.textContent = 'Play';
+                } else {
+                    // Play animation
+                    state.playing = true;
+                    button.textContent = 'Pause';
+                    
+                    // Start animation loop
+                    animationFunctions[principle]();
+                }
+            });
+        });
+        
+        resetButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                const container = button.closest('.principle-content');
+                const principle = container.id;
+                const state = animationStates[principle];
+                
+                // Reset animation
+                state.playing = false;
+                if (state.animation) {
+                    cancelAnimationFrame(state.animation);
+                    state.animation = null;
+                }
+                
+                // Reset frame counter
+                state.frame = 0;
+                
+                // Update button text
+                const playBtn = button.previousElementSibling;
+                playBtn.textContent = 'Play';
+                
+                // Redraw initial state
+                resetFunctions[principle]();
+            });
+        });
+        
+        // Animation Functions
+        const animationFunctions = {
+            // 1. Squash & Stretch
+            squash: function() {
+                const canvas = document.getElementById('squash-canvas');
+                const ctx = canvas.getContext('2d');
+                const state = animationStates.squash;
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Ball properties
+                const ball = {
+                    x: width / 2,
+                    y: 50,
+                    radius: 30,
+                    velocityY: 0,
+                    gravity: 0.4,
+                    elasticity: 0.8,
+                    floor: height - 50
+                };
+                
+                function animate() {
+                    // Clear canvas
+                    ctx.clearRect(0, 0, width, height);
+                    
+                    // Draw floor
+                    ctx.fillStyle = '#333';
+                    ctx.fillRect(0, ball.floor, width, 2);
+                    
+                    // Update ball position
+                    ball.velocityY += ball.gravity;
+                    ball.y += ball.velocityY;
+                    
+                    // Calculate squash and stretch factor
+                    let stretchFactor = 1 + (ball.velocityY * 0.02);
+                    let squashFactor = 1;
+                    
+                    // Handle floor collision with squash
+                    if (ball.y > ball.floor - ball.radius) {
+                        ball.y = ball.floor - ball.radius;
+                        ball.velocityY *= -ball.elasticity;
+                        
+                        // Calculate squash on impact
+                        squashFactor = 1 + Math.abs(ball.velocityY * 0.03);
+                        stretchFactor = 1 / squashFactor;
+                    }
+                    
+                    // Draw ball with squash and stretch
+                    ctx.save();
+                    ctx.translate(ball.x, ball.y);
+                    ctx.scale(squashFactor, stretchFactor);
+                    
+                    // Draw ball
+                    ctx.beginPath();
+                    ctx.arc(0, 0, ball.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = '#e74c3c';
+                    ctx.fill();
+                    
+                    // Draw a line in the ball to show rotation
+                    ctx.beginPath();
+                    ctx.moveTo(-ball.radius * 0.7, 0);
+                    ctx.lineTo(ball.radius * 0.7, 0);
+                    ctx.strokeStyle = 'white';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    ctx.restore();
+                    
+                    // Reset if ball goes too slow
+                    if (state.frame > 300 || (Math.abs(ball.velocityY) < 1 && ball.y > ball.floor - ball.radius - 2)) {
+                        ball.y = 50;
+                        ball.velocityY = 0;
+                        state.frame = 0;
+                    }
+                    
+                    // Increment frame counter
+                    state.frame++;
+                    
+                    // Continue animation loop if playing
+                    if (state.playing) {
+                        state.animation = requestAnimationFrame(animate);
+                    }
+                }
+                
+                // Start animation loop
+                animate();
+            },
+            
+            // 2. Anticipation
+            anticipation: function() {
+                const canvas = document.getElementById('anticipation-canvas');
+                const ctx = canvas.getContext('2d');
+                const state = animationStates.anticipation;
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Character properties
+                const character = {
+                    x: width / 2,
+                    y: height - 100,
+                    width: 50,
+                    height: 80,
+                    phase: 'anticipation', // anticipation, action, recovery
+                    frame: 0
+                };
+                
+                function animate() {
+                    // Clear canvas
+                    ctx.clearRect(0, 0, width, height);
+                    
+                    // Draw floor
+                    ctx.fillStyle = '#333';
+                    ctx.fillRect(0, height - 50, width, 50);
+                    
+                    // Update character based on phase
+                    if (character.phase === 'anticipation') {
+                        // Getting ready to jump - squatting down
+                        character.height = 80 - (character.frame * 0.5);
+                        character.width = 50 + (character.frame * 0.3);
+                        character.y = height - 100 + (character.frame * 0.5);
+                        
+                        if (character.frame >= 20) {
+                            character.phase = 'action';
+                            character.frame = 0;
+                        }
+                    } else if (character.phase === 'action') {
+                        // Jumping up
+                        const jumpHeight = 100;
+                        const jumpProgress = character.frame / 30;
+                        
+                        if (jumpProgress <= 1) {
+                            character.height = 70 + (jumpProgress * 20);
+                            character.width = 50 - (jumpProgress * 10);
+                            character.y = (height - 100) - (Math.sin(jumpProgress * Math.PI) * jumpHeight);
+                        }
+                        
+                        if (character.frame >= 30) {
+                            character.phase = 'recovery';
+                            character.frame = 0;
+                        }
+                    } else if (character.phase === 'recovery') {
+                        // Landing and recovering
+                        character.height = 90 - (character.frame * 0.5);
+                        character.width = 40 + (character.frame * 0.5);
+                        
+                        if (character.frame >= 20) {
+                            // Reset animation
+                            character.phase = 'anticipation';
+                            character.frame = 0;
+                            character.x = width / 2;
+                            character.y = height - 100;
+                            character.width = 50;
+                            character.height = 80;
+                            
+                            if (state.frame > 150) {
+                                state.frame = 0;
+                            }
+                        }
+                    }
+                    
+                    // Draw character
+                    ctx.fillStyle = '#3498db';
+                    ctx.save();
+                    ctx.translate(character.x - character.width / 2, character.y - character.height);
+                    
+                    // Body
+                    ctx.fillRect(0, 0, character.width, character.height);
+                    
+                    // Head (simpler shape)
+                    ctx.beginPath();
+                    ctx.arc(character.width / 2, -20, 15, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    ctx.restore();
+                    
+                    // Draw anticipation lines if in anticipation phase
+                    if (character.phase === 'anticipation') {
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        const lineStrength = character.frame / 20;
+                        
+                        ctx.moveTo(character.x - 30, character.y - 30);
+                        ctx.lineTo(character.x - 40 - (lineStrength * 10), character.y - 50 - (lineStrength * 20));
+                        
+                        ctx.moveTo(character.x + 30, character.y - 30);
+                        ctx.lineTo(character.x + 40 + (lineStrength * 10), character.y - 50 - (lineStrength * 20));
+                        
+                        ctx.stroke();
+                    }
+                    
+                    // Increment frame counters
+                    character.frame++;
+                    state.frame++;
+                    
+                    // Continue animation loop if playing
+                    if (state.playing) {
+                        state.animation = requestAnimationFrame(animate);
+                    }
+                }
+                
+                // Start animation loop
+                animate();
+            },
+            
+            // 3. Staging
+            staging: function() {
+                const canvas = document.getElementById('staging-canvas');
+                const ctx = canvas.getContext('2d');
+                const state = animationStates.staging;
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Elements
+                const elements = [
+                    { x: 100, y: height/2, radius: 30, color: '#e74c3c', highlight: false },
+                    { x: width/2, y: height/2, radius: 30, color: '#3498db', highlight: true },
+                    { x: width-100, y: height/2, radius: 30, color: '#2ecc71', highlight: false }
+                ];
+                
+                // Animation progress
+                let progress = 0;
+                
+                function animate() {
+                    // Clear canvas
+                    ctx.clearRect(0, 0, width, height);
+                    
+                    // Draw background grid
+                    ctx.strokeStyle = 'rgba(200, 200, 200, 0.2)';
+                    ctx.lineWidth = 1;
+                    
+                    for(let i = 0; i < width; i += 50) {
+                        ctx.beginPath();
+                        ctx.moveTo(i, 0);
+                        ctx.lineTo(i, height);
+                        ctx.stroke();
+                    }
+                    
+                    for(let i = 0; i < height; i += 50) {
+                        ctx.beginPath();
+                        ctx.moveTo(0, i);
+                        ctx.lineTo(width, i);
+                        ctx.stroke();
+                    }
+                    
+                    // Update staging
+                    progress = (state.frame % 120) / 120;
+                    
+                    // Determine which element to highlight
+                    const highlightIndex = Math.floor(progress * 3);
+                    elements.forEach((el, i) => {
+                        el.highlight = (i === highlightIndex);
+                    });
+                    
+                    // Draw spotlight effect
+                    const spotlightRadius = 100;
+                    const activeElement = elements[highlightIndex];
+                    
+                    // Create radial gradient for spotlight
+                    const gradient = ctx.createRadialGradient(
+                        activeElement.x, activeElement.y, 0,
+                        activeElement.x, activeElement.y, spotlightRadius
+                    );
+                    
+                    gradient.addColorStop(0, 'rgba(255, 255, 255, 0.3)');
+                    gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                    
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(activeElement.x, activeElement.y, spotlightRadius, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Draw dimming overlay except for spotlight
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                    ctx.fillRect(0, 0, width, height);
+                    
+                    // Clear spotlight area
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.beginPath();
+                    ctx.arc(activeElement.x, activeElement.y, spotlightRadius, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.globalCompositeOperation = 'source-over';
+                    
+                    // Draw elements
+                    elements.forEach(el => {
+                        // Draw element
+                        ctx.beginPath();
+                        ctx.arc(el.x, el.y, el.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = el.color;
+                        ctx.fill();
+                        
+                        // Add glow for highlighted element
+                        if (el.highlight) {
+                            // Pulsing size
+                            const pulse = 1 + Math.sin(state.frame * 0.1) * 0.1;
+                            
+                            ctx.beginPath();
+                            ctx.arc(el.x, el.y, el.radius * pulse, 0, Math.PI * 2);
+                            ctx.strokeStyle = 'white';
+                            ctx.lineWidth = 3;
+                            ctx.stroke();
+                            
+                            // Draw element label
+                            ctx.fillStyle = 'white';
+                            ctx.font = '16px Arial';
+                            ctx.textAlign = 'center';
+                            ctx.fillText('Focus Here', el.x, el.y - el.radius - 20);
+                        }
+                    });
+                    
+                    // Increment frame counter
+                    state.frame++;
+                    
+                    // Continue animation loop if playing
+                    if (state.playing) {
+                        state.animation = requestAnimationFrame(animate);
+                    }
+                }
+                
+                // Start animation loop
+                animate();
+            },
+            
+            // 4. Straight Ahead & Pose to Pose
+            straight: function() {
+                const canvas = document.getElementById('straight-canvas');
+                const ctx = canvas.getContext('2d');
+                const state = animationStates.straight;
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Animation properties
+                const animProps = {
+                    centerX: width / 2,
+                    leftX: width * 0.25,
+                    rightX: width * 0.75,
+                    baseY: height - 80,
+                    progress: 0
+                };
+                
+                // Draw Functions
+                function drawCharacter(x, y, phase, style) {
+                    const head = { x: x, y: y - 60 };
+                    
+                    // Draw different body based on style
+                    if (style === 'straight') {
+                        // More organic, slightly unpredictable movement
+                        const wobble = Math.sin(phase * 10) * 5;
+                        
+                        // Body with more irregular shape
+                        ctx.beginPath();
+                        ctx.moveTo(x - 15, y);
+                        ctx.quadraticCurveTo(x - 20 + wobble, y - 30, x, y - 60);
+                        ctx.quadraticCurveTo(x + 20 - wobble, y - 30, x + 15, y);
+                        ctx.closePath();
+                        ctx.fillStyle = '#e74c3c';
+                        ctx.fill();
+                        
+                        // Arms with variability
+                        const armPhase = phase * Math.PI * 2;
+                        ctx.beginPath();
+                        ctx.moveTo(x - 15, y - 45);
+                        ctx.lineTo(x - 25 - Math.sin(armPhase) * 10, y - 30 + Math.cos(armPhase) * 5);
+                        ctx.stroke();
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(x + 15, y - 45);
+                        ctx.lineTo(x + 25 + Math.sin(armPhase) * 10, y - 30 + Math.cos(armPhase) * 5);
+                        ctx.stroke();
+                        
+                    } else {
+                        // More mechanical, keyframe-based movement
+                        // Determine which keyframe we're in (dividing animation into 4 poses)
+                        const keyframeIndex = Math.floor(phase * 4) % 4;
+                        const keyframeFactor = (phase * 4) % 1; // How far between keyframes
+                        
+                        // Define key poses
+                        const poses = [
+                            { bodyWidth: 30, bodyHeight: 60, armAngle: -0.3 }, // Pose 1
+                            { bodyWidth: 25, bodyHeight: 55, armAngle: 0.2 },  // Pose 2
+                            { bodyWidth: 30, bodyHeight: 60, armAngle: 0.7 },  // Pose 3
+                            { bodyWidth: 25, bodyHeight: 55, armAngle: 0.2 }   // Pose 4
+                        ];
+                        
+                        // Get current and next pose
+                        const currentPose = poses[keyframeIndex];
+                        const nextPose = poses[(keyframeIndex + 1) % 4];
+                        
+                        // Interpolate between poses
+                        const bodyWidth = currentPose.bodyWidth + (nextPose.bodyWidth - currentPose.bodyWidth) * keyframeFactor;
+                        const bodyHeight = currentPose.bodyHeight + (nextPose.bodyHeight - currentPose.bodyHeight) * keyframeFactor;
+                        const armAngle = currentPose.armAngle + (nextPose.armAngle - currentPose.armAngle) * keyframeFactor;
+                        
+                        // Draw body
+                        ctx.fillStyle = '#3498db';
+                        ctx.fillRect(x - bodyWidth/2, y - bodyHeight, bodyWidth, bodyHeight);
+                        
+                        // Draw arms with pose-based positioning
+                        ctx.beginPath();
+                        ctx.moveTo(x - bodyWidth/2, y - bodyHeight + 10);
+                        ctx.lineTo(x - bodyWidth/2 - 15 * Math.cos(armAngle), y - bodyHeight + 10 + 15 * Math.sin(armAngle));
+                        ctx.stroke();
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(x + bodyWidth/2, y - bodyHeight + 10);
+                        ctx.lineTo(x + bodyWidth/2 + 15 * Math.cos(armAngle), y - bodyHeight + 10 + 15 * Math.sin(armAngle));
+                        ctx.stroke();
+                        
+                        // Draw key dots at pose positions
+                        if (keyframeFactor < 0.1 || keyframeFactor > 0.9) {
+                            ctx.beginPath();
+                            ctx.arc(x, y - 80, 3, 0, Math.PI * 2);
+                            ctx.fillStyle = 'yellow';
+                            ctx.fill();
+                        }
+                    }
+                    
+                    // Draw head (common to both styles)
+                    ctx.beginPath();
+                    ctx.arc(head.x, head.y, 15, 0, Math.PI * 2);
+                    ctx.fillStyle = style === 'straight' ? '#e74c3c' : '#3498db';
+                    ctx.fill();
+                    
+                    // Draw eyes
+                    ctx.fillStyle = 'white';
+                    ctx.beginPath();
+                    ctx.arc(head.x - 5, head.y - 2, 3, 0, Math.PI * 2);
+                    ctx.arc(head.x + 5, head.y - 2, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                function drawLabels() {
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold 14px Arial';
+                    ctx.textAlign = 'center';
+                    
+                    ctx.fillText('Straight Ahead', animProps.leftX, height - 30);
+                    ctx.fillText('Pose to Pose', animProps.rightX, height - 30);
+                    
+                    // Draw dividing line
+                    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+                    ctx.beginPath();
+                    ctx.moveTo(width/2, 50);
+                    ctx.lineTo(width/2, height - 50);
+                    ctx.stroke();
+                }
+                
+                function animate() {
+                    // Clear canvas
+                    ctx.clearRect(0, 0, width, height);
+                    
+                    // Update progress
+                    animProps.progress = (state.frame % 120) / 120;
+                    
+                    // Draw floor
+                    ctx.fillStyle = '#333';
+                    ctx.fillRect(0, height - 50, width, 50);
+                    
+                    // Set line style for arms
+                    ctx.strokeStyle = 'white';
+                    ctx.lineWidth = 2;
+                    
+                    // Draw straight ahead character
+                    drawCharacter(animProps.leftX, animProps.baseY, animProps.progress, 'straight');
+                    
+                    // Draw pose to pose character
+                    drawCharacter(animProps.rightX, animProps.baseY, animProps.progress, 'pose');
+                    
+                    // Draw labels
+                    drawLabels();
+                    
+                    // Increment frame counter
+                    state.frame++;
+                    
+                    // Continue animation loop if playing
+                    if (state.playing) {
+                        state.animation = requestAnimationFrame(animate);
+                    }
+                }
+                
+                // Start animation loop
+                animate();
+            },
+            
+            // 5. Follow Through & Overlapping Action
+            follow: function() {
+                const canvas = document.getElementById('follow-canvas');
+                const ctx = canvas.getContext('2d');
+                const state = animationStates.follow;
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Character properties
+                const character = {
+                    x: 100,
+                    y: height - 100,
+                    width: 40,
+                    height: 70,
+                    vx: 2,
+                    phase: 'moving', // moving, stopping, stopped
+                    stopX: width - 150,
+                    frame: 0
+                };
+                
+                // Tail/hair segments for follow through
+                const segments = [];
+                const numSegments = 8;
+                for (let i = 0; i < numSegments; i++) {
+                    segments.push({
+                        x: character.x,
+                        y: character.y - character.height - 5 - (i * 5),
+                        size: 8 - i * 0.5
+                    });
+                }
+                
+                function animate() {
+                    // Clear canvas
+                    ctx.clearRect(0, 0, width, height);
+                    
+                    // Draw floor
+                    ctx.fillStyle = '#333';
+                    ctx.fillRect(0, height - 50, width, 2);
+                    
+                    // Update character based on phase
+                    if (character.phase === 'moving') {
+                        character.x += character.vx;
+                        
+                        if (character.x >= character.stopX) {
+                            character.phase = 'stopping';
+                            character.frame = 0;
+                        }
+                    } else if (character.phase === 'stopping') {
+                        character.vx *= 0.9;
+                        character.x += character.vx;
+                        
+                        if (character.vx < 0.1) {
+                            character.phase = 'stopped';
+                            character.vx = 0;
+                            character.frame = 0;
+                        }
+                    } else if (character.phase === 'stopped') {
+                        // Reset after some time
+                        if (character.frame > 100) {
+                            character.x = 100;
+                            character.vx = 2;
+                            character.phase = 'moving';
+                            character.frame = 0;
+                            
+                            // Reset segments
+                            for (let i = 0; i < segments.length; i++) {
+                                segments[i].x = character.x;
+                                segments[i].y = character.y - character.height - 5 - (i * 5);
+                            }
+                        }
+                    }
+                    
+                    // Update segments with follow through
+                    for (let i = 0; i < segments.length; i++) {
+                        if (i === 0) {
+                            // First segment follows the character with a delay
+                            const targetX = character.x + character.width / 2;
+                            const targetY = character.y - character.height - 5;
+                            
+                            segments[i].x += (targetX - segments[i].x) * 0.2;
+                            segments[i].y += (targetY - segments[i].y) * 0.2;
+                        } else {
+                            // Each segment follows the previous one
+                            const targetX = segments[i-1].x;
+                            const targetY = segments[i-1].y - 5;
+                            
+                            segments[i].x += (targetX - segments[i].x) * (0.2 - (i * 0.01));
+                            segments[i].y += (targetY - segments[i].y) * (0.2 - (i * 0.01));
+                        }
+                    }
+                    
+                    // Draw character
+                    ctx.fillStyle = '#3498db';
+                    ctx.fillRect(character.x, character.y - character.height, character.width, character.height);
+                    
+                    // Draw head
+                    ctx.beginPath();
+                    ctx.arc(character.x + character.width / 2, character.y - character.height - 15, 15, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Draw segments (tail/hair)
+                    for (let i = segments.length - 1; i >= 0; i--) {
+                        const segment = segments[i];
+                        ctx.beginPath();
+                        ctx.arc(segment.x, segment.y, segment.size, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(231, 76, 60, ${1 - i * 0.1})`;
+                        ctx.fill();
+                    }
+                    
+                    // Draw motion lines if moving
+                    if (character.phase === 'moving' || character.phase === 'stopping') {
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                        ctx.lineWidth = 2;
+                        
+                        // Draw lines based on speed
+                        const lineLength = character.vx * 10;
+                        const opacity = character.vx / 2;
+                        
+                        for (let i = 1; i <= 3; i++) {
+                            ctx.beginPath();
+                            ctx.moveTo(character.x - i * 10, character.y - character.height / 2);
+                            ctx.lineTo(character.x - i * 10 - lineLength, character.y - character.height / 2);
+                            ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * (1 - i * 0.2)})`;
+                            ctx.stroke();
+                        }
+                    }
+                    
+                    // Draw phase indicator
+                    ctx.fillStyle = 'white';
+                    ctx.font = '14px Arial';
+                    ctx.textAlign = 'center';
+                    
+                    if (character.phase === 'moving') {
+                        ctx.fillText('Moving: Main body leads', width / 2, 30);
+                    } else if (character.phase === 'stopping') {
+                        ctx.fillText('Stopping: Watch follow-through in tail/hair', width / 2, 30);
+                    } else {
+                        ctx.fillText('Stopped: Parts continue to move after body stops', width / 2, 30);
+                    }
+                    
+                    // Draw explanation line
+                    if (character.phase === 'stopping' || character.phase === 'stopped') {
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                        ctx.setLineDash([5, 5]);
+                        ctx.beginPath();
+                        ctx.moveTo(character.x + character.width/2, character.y - character.height - 15);
+                        
+                        // Create a path through the segments
+                        for (let i = 0; i < segments.length; i++) {
+                            ctx.lineTo(segments[i].x, segments[i].y);
+                        }
+                        
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+                    
+                    // Increment frame counters
+                    character.frame++;
+                    state.frame++;
+                    
+                    // Continue animation loop if playing
+                    if (state.playing) {
+                        state.animation = requestAnimationFrame(animate);
+                    }
+                }
+                
+                // Start animation loop
+                animate();
+            },
+            
+            // 6. Slow In & Slow Out
+            slow: function() {
+                const canvas = document.getElementById('slow-canvas');
+                const ctx = canvas.getContext('2d');
+                const state = animationStates.slow;
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Ball properties
+                const balls = [
+                    { x: 100, y: height/2, radius: 25, color: '#e74c3c', easing: false, position: 0 },
+                    { x: 100, y: height/2, radius: 25, color: '#3498db', easing: true, position: 0 }
+                ];
+                
+                // Track dot positions
+                const trackDots = [];
+                const trackInterval = 10;
+                let lastTrackFrame = 0;
+                
+                function animate() {
+                    // Clear canvas
+                    ctx.clearRect(0, 0, width, height);
+                    
+                    // Progress as a value between 0 and 1 that cycles
+                    const cycleLength = 180;
+                    const progress = (state.frame % cycleLength) / cycleLength;
+                    
+                    // Draw track
+                    ctx.strokeStyle = '#ccc';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(100, height/2);
+                    ctx.lineTo(width - 100, height/2);
+                    ctx.stroke();
+                    
+                    // Add track dots every few frames
+                    if (state.frame - lastTrackFrame >= trackInterval) {
+                        lastTrackFrame = state.frame;
+                        
+                        for (let i = 0; i < balls.length; i++) {
+                            trackDots.push({
+                                x: balls[i].x,
+                                y: balls[i].y,
+                                color: balls[i].color,
+                                opacity: 1,
+                                radius: 3
+                            });
+                        }
+                    }
+                    
+                    // Update and draw track dots
+                    for (let i = trackDots.length - 1; i >= 0; i--) {
+                        const dot = trackDots[i];
+                        dot.opacity -= 0.01;
+                        
+                        if (dot.opacity <= 0) {
+                            trackDots.splice(i, 1);
+                            continue;
+                        }
+                        
+                        ctx.beginPath();
+                        ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = `${dot.color}${Math.floor(dot.opacity * 255).toString(16).padStart(2, '0')}`;
+                        ctx.fill();
+                    }
+                    
+                    // Update ball positions
+                    for (let i = 0; i < balls.length; i++) {
+                        const ball = balls[i];
+                        const distance = width - 200; // Total distance to travel
+                        
+                        if (ball.easing) {
+                            // Ease in and out - cubic function
+                            if (progress < 0.5) {
+                                // Moving right with easing
+                                ball.position = progress * 2; // 0 to 1
+                                const easedPosition = ball.position * ball.position * (3 - 2 * ball.position); // Cubic easing
+                                ball.x = 100 + distance * easedPosition;
+                            } else {
+                                // Moving left with easing
+                                ball.position = (progress - 0.5) * 2; // 0 to 1
+                                const easedPosition = ball.position * ball.position * (3 - 2 * ball.position); // Cubic easing
+                                ball.x = (width - 100) - distance * easedPosition;
+                            }
+                        } else {
+                            // Linear motion - no easing
+                            if (progress < 0.5) {
+                                // Moving right linearly
+                                ball.position = progress * 2; // 0 to 1
+                                ball.x = 100 + distance * ball.position;
+                            } else {
+                                // Moving left linearly
+                                ball.position = (progress - 0.5) * 2; // 0 to 1
+                                ball.x = (width - 100) - distance * ball.position;
+                            }
+                        }
+                        
+                        // Draw ball
+                        ctx.beginPath();
+                        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = ball.color;
+                        ctx.fill();
+                        
+                        // Draw ball label
+                        ctx.fillStyle = 'white';
+                        ctx.font = '12px Arial';
+                        ctx.textAlign = 'center';
+                        if (i === 0) {
+                            ctx.fillText('Linear', ball.x, ball.y + ball.radius + 20);
+                        } else {
+                            ctx.fillText('Eased', ball.x, ball.y + ball.radius + 20);
+                        }
+                    }
+                    
+                    // Draw spacer between balls for visibility
+                    if (Math.abs(balls[0].x - balls[1].x) < balls[0].radius * 2) {
+                        balls[0].y = height/2 - 30;
+                        balls[1].y = height/2 + 30;
+                    } else {
+                        balls[0].y = height/2;
+                        balls[1].y = height/2;
+                    }
+                    
+                    // Draw phase indicator
+                    ctx.fillStyle = 'white';
+                    ctx.font = '14px Arial';
+                    ctx.textAlign = 'center';
+                    if (progress < 0.5) {
+                        const phaseProgress = progress * 2; // 0 to 1
+                        if (phaseProgress < 0.2) {
+                            ctx.fillText('Slow Out: Starting slowly, accelerating', width / 2, 30);
+                        } else if (phaseProgress > 0.8) {
+                            ctx.fillText('Slow In: Decelerating, stopping gently', width / 2, 30);
+                        } else {
+                            ctx.fillText('Notice the spacing difference between the two balls', width / 2, 30);
+                        }
+                    } else {
+                        const phaseProgress = (progress - 0.5) * 2; // 0 to 1
+                        if (phaseProgress < 0.2) {
+                            ctx.fillText('Slow Out: Starting slowly, accelerating', width / 2, 30);
+                        } else if (phaseProgress > 0.8) {
+                            ctx.fillText('Slow In: Decelerating, stopping gently', width / 2, 30);
+                        } else {
+                            ctx.fillText('Notice the spacing difference between the two balls', width / 2, 30);
+                        }
+                    }
+                    
+                    // Increment frame counter
+                    state.frame++;
+                    
+                    // Continue animation loop if playing
+                    if (state.playing) {
+                        state.animation = requestAnimationFrame(animate);
+                    }
+                }
+                
+                // Start animation loop
+                animate();
+            },
+            
+            // 7. Arc
+            arc: function() {
+                const canvas = document.getElementById('arc-canvas');
+                const ctx = canvas.getContext('2d');
+                const state = animationStates.arc;
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Ball properties
+                const balls = [
+                    { x: 100, y: height/2, radius: 20, color: '#e74c3c', useArc: false, trail: [] },
+                    { x: 100, y: height/2, radius: 20, color: '#3498db', useArc: true, trail: [] }
+                ];
+                
+                function animate() {
+                    // Clear canvas
+                    ctx.clearRect(0, 0, width, height);
+                    
+                    // Progress as a value between 0 and 1 that cycles
+                    const cycleLength = 180;
+                    const progress = (state.frame % cycleLength) / cycleLength;
+                    
+                    // Draw paths
+                    // Straight path
+                    ctx.strokeStyle = 'rgba(231, 76, 60, 0.3)';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(100, height/2);
+                    ctx.lineTo(width - 100, height/2);
+                    ctx.stroke();
+                    
+                    // Arc path
+                    ctx.strokeStyle = 'rgba(52, 152, 219, 0.3)';
+                    ctx.beginPath();
+                    ctx.moveTo(100, height/2);
+                    ctx.quadraticCurveTo(width/2, height/2 - 100, width - 100, height/2);
+                    ctx.stroke();
+                    
+                    // Update ball positions
+                    for (let i = 0; i < balls.length; i++) {
+                        const ball = balls[i];
+                        const horizontalDistance = width - 200; // Total distance to travel
+                        
+                        // Update position
+                        if (progress < 0.5) {
+                            // Moving right
+                            const posProgress = progress * 2; // 0 to 1
+                            
+                            ball.x = 100 + horizontalDistance * posProgress;
+                            
+                            if (ball.useArc) {
+                                // Calculate y position along the arc
+                                const arcHeight = 100;
+                                ball.y = height/2 - Math.sin(posProgress * Math.PI) * arcHeight;
+                            } else {
+                                ball.y = height/2;
+                            }
+                        } else {
+                            // Moving left
+                            const posProgress = (1 - (progress - 0.5) * 2); // 1 to 0
+                            
+                            ball.x = 100 + horizontalDistance * posProgress;
+                            
+                            if (ball.useArc) {
+                                // Calculate y position along the arc
+                                const arcHeight = 100;
+                                ball.y = height/2 - Math.sin(posProgress * Math.PI) * arcHeight;
+                            } else {
+                                ball.y = height/2;
+                            }
+                        }
+                        
+                        // Record trail point every few frames
+                        if (state.frame % 3 === 0) {
+                            ball.trail.push({x: ball.x, y: ball.y, opacity: 1});
+                            
+                            // Limit trail length
+                            if (ball.trail.length > 20) {
+                                ball.trail.shift();
+                            }
+                        }
+                        
+                        // Draw trail
+                        for (let j = 0; j < ball.trail.length; j++) {
+                            const point = ball.trail[j];
+                            point.opacity -= 0.01;
+                            
+                            if (point.opacity <= 0) continue;
+                            
+                            ctx.beginPath();
+                            ctx.arc(point.x, point.y, 3, 0, Math.PI * 2);
+                            ctx.fillStyle = `${ball.color}${Math.floor(point.opacity * 255).toString(16).padStart(2, '0')}`;
+                            ctx.fill();
+                        }
+                        
+                        // Draw ball
+                        ctx.beginPath();
+                        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = ball.color;
+                        ctx.fill();
+                        
+                        // Draw ball label
+                        ctx.fillStyle = 'white';
+                        ctx.font = '12px Arial';
+                        ctx.textAlign = 'center';
+                        if (!ball.useArc) {
+                            ctx.fillText('Linear', ball.x, Math.min(ball.y + ball.radius + 20, height - 20));
+                        } else {
+                            ctx.fillText('Arc', ball.x, Math.min(ball.y + ball.radius + 20, height - 20));
+                        }
+                    }
+                    
+                    // Draw explanatory text
+                    ctx.fillStyle = 'white';
+                    ctx.font = '14px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Movement along arcs feels more natural and organic', width/2, 40);
+                    
+                    // Increment frame counter
+                    state.frame++;
+                    
+                    // Continue animation loop if playing
+                    if (state.playing) {
+                        state.animation = requestAnimationFrame(animate);
+                    }
+                }
+                
+                // Start animation loop
+                animate();
+            },
+            
+            // 8. Secondary Action
+            secondary: function() {
+                const canvas = document.getElementById('secondary-canvas');
+                const ctx = canvas.getContext('2d');
+                const state = animationStates.secondary;
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Character properties
+                const character = {
+                    x: 100,
+                    y: height - 100,
+                    vx: 1.5,
+                    width: 35,
+                    height: 70,
+                    showSecondary: true,
+                    legPhase: 0,
+                    armSwing: 0,
+                    bubbleSize: 0,
+                    bubblePhase: 0, // 0=growing, 1=full, 2=popping
+                    jawPosition: 0,
+                    bubbleGrowthRate: 0.15,
+                    bubbleMaxSize: 12,
+                    bubbleStayFrames: 0,
+                    bubbleMaxStayFrames: 30,
+                    chewPhase: 0
+                };
+                
+                function animate() {
+                    // Clear canvas
+                    ctx.clearRect(0, 0, width, height);
+                    
+                    // Draw floor
+                    ctx.fillStyle = '#333';
+                    ctx.fillRect(0, height - 50, width, 2);
+                    
+                    // Update character position
+                    character.x += character.vx;
+                    
+                    // Reset if character reaches the edge
+                    if (character.x > width - 100) {
+                        character.x = 100;
+                    }
+                    
+                    // Toggle secondary action every 300 frames
+                    if (state.frame % 300 === 0) {
+                        character.showSecondary = !character.showSecondary;
+                    }
+                    
+                    // Update animation phases
+                    character.legPhase = (state.frame * 0.05) % (Math.PI * 2);
+                    character.armSwing = Math.sin(state.frame * 0.05) * 15;
+                    
+                    // Update chewing motion when not blowing a bubble
+                    character.chewPhase = (state.frame * 0.2) % (Math.PI * 2);
+                    character.jawPosition = Math.sin(character.chewPhase) * 2;
+                    
+                    // Update bubble animation for chewing gum
+                    if (character.showSecondary) {
+                        if (character.bubblePhase === 0) {
+                            // Growing bubble
+                            character.bubbleSize += character.bubbleGrowthRate;
+                            if (character.bubbleSize >= character.bubbleMaxSize) {
+                                character.bubblePhase = 1;
+                                character.bubbleSize = character.bubbleMaxSize;
+                                character.bubbleStayFrames = 0;
+                            }
+                        } else if (character.bubblePhase === 1) {
+                            // Bubble at full size
+                            character.bubbleStayFrames++;
+                            if (character.bubbleStayFrames > character.bubbleMaxStayFrames) {
+                                character.bubblePhase = 2;
+                            }
+                        } else if (character.bubblePhase === 2) {
+                            // Popping bubble (flat ellipse)
+                            character.bubbleSize -= character.bubbleGrowthRate * 3;
+                            if (character.bubbleSize <= 0) {
+                                character.bubbleSize = 0;
+                                character.bubblePhase = 3; // Reset phase
+                            }
+                        } else {
+                            // Pause before starting next bubble
+                            if (Math.random() < 0.02) { // 2% chance each frame to start a new bubble
+                                character.bubblePhase = 0;
+                            }
+                        }
+                    }
+                    
+                    // Draw girl character
+                    
+                    // Draw legs with walking animation
+                    ctx.strokeStyle = '#e74c3c';
+                    ctx.lineWidth = 3;
+                    
+                    // Left leg
+                    ctx.beginPath();
+                    ctx.moveTo(character.x - 5, character.y - character.height + 30);
+                    ctx.lineTo(
+                        character.x - 8 - Math.sin(character.legPhase) * 10, 
+                        character.y - 5
+                    );
+                    ctx.stroke();
+                    
+                    // Right leg
+                    ctx.beginPath();
+                    ctx.moveTo(character.x + 5, character.y - character.height + 30);
+                    ctx.lineTo(
+                        character.x + 8 + Math.sin(character.legPhase + Math.PI) * 10, 
+                        character.y - 5
+                    );
+                    ctx.stroke();
+                    
+                    // Draw dress/skirt with slight movement
+                    ctx.fillStyle = '#e74c3c';
+                    ctx.beginPath();
+                    ctx.moveTo(character.x - character.width/2, character.y - character.height + 30);
+                    ctx.lineTo(character.x + character.width/2, character.y - character.height + 30);
+                    ctx.lineTo(
+                        character.x + character.width/2 + 5 + Math.sin(character.legPhase) * 2, 
+                        character.y - character.height + 50
+                    );
+                    ctx.lineTo(
+                        character.x - character.width/2 - 5 + Math.sin(character.legPhase) * 2, 
+                        character.y - character.height + 50
+                    );
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    // Draw body with slight up/down movement
+                    const bodyBounce = Math.abs(Math.sin(character.legPhase)) * 2;
+                    ctx.fillRect(
+                        character.x - character.width/2 + 5, 
+                        character.y - character.height + 30 - bodyBounce, 
+                        character.width - 10, 
+                        30
+                    );
+                    
+                    // Draw arms with swing
+                    ctx.beginPath();
+                    ctx.moveTo(character.x - character.width/4, character.y - character.height + 35 - bodyBounce);
+                    ctx.lineTo(
+                        character.x - character.width/4 - 10, 
+                        character.y - character.height + 35 + character.armSwing - bodyBounce
+                    );
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(character.x + character.width/4, character.y - character.height + 35 - bodyBounce);
+                    ctx.lineTo(
+                        character.x + character.width/4 + 10, 
+                        character.y - character.height + 35 - character.armSwing - bodyBounce
+                    );
+                    ctx.stroke();
+                    
+                    // Draw head with slight bounce
+                    ctx.beginPath();
+                    ctx.arc(character.x, character.y - character.height - bodyBounce, 15, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Draw hair
+                    ctx.beginPath();
+                    ctx.arc(character.x, character.y - character.height - 3 - bodyBounce, 16, Math.PI, 0, true);
+                    ctx.fill();
+                    
+                    // Draw ponytail with movement
+                    ctx.beginPath();
+                    ctx.moveTo(character.x, character.y - character.height - 5 - bodyBounce);
+                    ctx.quadraticCurveTo(
+                        character.x + 15 - Math.sin(character.legPhase) * 2, 
+                        character.y - character.height + 10 - bodyBounce, 
+                        character.x + 25 - Math.sin(character.legPhase) * 4, 
+                        character.y - character.height + 20 - bodyBounce
+                    );
+                    ctx.lineWidth = 6;
+                    ctx.stroke();
+                    
+                    // Draw face features
+                    ctx.fillStyle = 'white';
+                    ctx.beginPath();
+                    ctx.arc(character.x - 5, character.y - character.height - 2 - bodyBounce, 3, 0, Math.PI * 2);
+                    ctx.arc(character.x + 5, character.y - character.height - 2 - bodyBounce, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    ctx.fillStyle = 'black';
+                    ctx.beginPath();
+                    ctx.arc(character.x - 5, character.y - character.height - 2 - bodyBounce, 1.5, 0, Math.PI * 2);
+                    ctx.arc(character.x + 5, character.y - character.height - 2 - bodyBounce, 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Draw jaw and mouth based on chewing or blowing bubble
+                    if (character.showSecondary) {
+                        if (character.bubblePhase === 0 || character.bubblePhase === 1) {
+                            // Pursed lips for blowing bubble
+                            ctx.fillStyle = '#e74c3c';
+                            ctx.beginPath();
+                            ctx.arc(
+                                character.x + 8, 
+                                character.y - character.height + 5 - bodyBounce, 
+                                3, 
+                                0, 
+                                Math.PI * 2
+                            );
+                            ctx.fill();
+                        } else {
+                            // Chewing motion
+                            ctx.beginPath();
+                            ctx.strokeStyle = 'black';
+                            ctx.lineWidth = 1;
+                            ctx.moveTo(character.x - 5, character.y - character.height + 5 - bodyBounce + character.jawPosition);
+                            ctx.lineTo(character.x + 5, character.y - character.height + 5 - bodyBounce + character.jawPosition);
+                            ctx.stroke();
+                        }
+                    } else {
+                        // Just a normal smile
+                        ctx.beginPath();
+                        ctx.strokeStyle = 'black';
+                        ctx.lineWidth = 1;
+                        ctx.arc(
+                            character.x, 
+                            character.y - character.height + 5 - bodyBounce, 
+                            5, 
+                            0.2, 
+                            Math.PI - 0.2
+                        );
+                        ctx.stroke();
+                    }
+                    
+                    // Draw secondary action - chewing gum bubble
+                    if (character.showSecondary && character.bubbleSize > 0) {
+                        if (character.bubblePhase === 2) {
+                            // Popping bubble - flat ellipse
+                            ctx.fillStyle = 'rgba(255, 192, 203, 0.8)';
+                            ctx.beginPath();
+                            ctx.ellipse(
+                                character.x + 10, 
+                                character.y - character.height + 5 - bodyBounce, 
+                                character.bubbleSize * 2, 
+                                character.bubbleSize * 0.5, 
+                                0, 
+                                0, 
+                                Math.PI * 2
+                            );
+                            ctx.fill();
+                            
+                            // Draw "pop" lines
+                            ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+                            ctx.lineWidth = 0.5;
+                            for (let i = 0; i < 4; i++) {
+                                const angle = (Math.PI * 2 * i) / 4;
+                                ctx.beginPath();
+                                ctx.moveTo(
+                                    character.x + 10 + Math.cos(angle) * character.bubbleSize * 1.5, 
+                                    character.y - character.height + 5 - bodyBounce + Math.sin(angle) * character.bubbleSize * 0.5
+                                );
+                                ctx.lineTo(
+                                    character.x + 10 + Math.cos(angle) * character.bubbleSize * 2.5, 
+                                    character.y - character.height + 5 - bodyBounce + Math.sin(angle) * character.bubbleSize * 0.8
+                                );
+                                ctx.stroke();
+                            }
+                        } else {
+                            // Normal bubble
+                            ctx.fillStyle = 'rgba(255, 192, 203, 0.8)';
+                            ctx.beginPath();
+                            ctx.arc(
+                                character.x + 10, 
+                                character.y - character.height + 5 - bodyBounce, 
+                                character.bubbleSize, 
+                                0, 
+                                Math.PI * 2
+                            );
+                            ctx.fill();
+                            
+                            // Shine on bubble
+                            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                            ctx.beginPath();
+                            ctx.arc(
+                                character.x + 8, 
+                                character.y - character.height + 3 - bodyBounce, 
+                                character.bubbleSize * 0.3, 
+                                0, 
+                                Math.PI * 2
+                            );
+                            ctx.fill();
+                        }
+                    }
+                    
+                    // Draw gum in mouth when visible
+                    if (character.showSecondary && character.bubblePhase === 3) {
+                        ctx.fillStyle = 'rgba(255, 192, 203, 0.8)';
+                        ctx.beginPath();
+                        ctx.arc(
+                            character.x + 2, 
+                            character.y - character.height + 5 - bodyBounce + character.jawPosition * 0.5, 
+                            2, 
+                            0, 
+                            Math.PI * 2
+                        );
+                        ctx.fill();
+                    }
+                    
+                    // Add small bubble animation to show blowing
+                    if (character.showSecondary && character.bubblePhase === 0) {
+                        const blowIndicator = character.bubbleSize * 0.3;
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                        ctx.lineWidth = 0.5;
+                        for (let i = 0; i < 3; i++) {
+                            const offset = i * 2;
+                            ctx.beginPath();
+                            ctx.arc(
+                                character.x + 12 + offset, 
+                                character.y - character.height + 5 - bodyBounce, 
+                                blowIndicator + i, 
+                                0, 
+                                Math.PI * 2
+                            );
+                            ctx.stroke();
+                        }
+                    }
+                    
+                    // Draw status indicator
+                    ctx.fillStyle = 'white';
+                    ctx.font = '14px Arial';
+                    ctx.textAlign = 'center';
+                    
+                    if (character.showSecondary) {
+                        ctx.fillText('Walking with Secondary Action (chewing gum)', width/2, 40);
+                    } else {
+                        ctx.fillText('Walking without Secondary Action', width/2, 40);
+                    }
+                    
+                    // Draw motion lines
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                    ctx.lineWidth = 2;
+                    
+                    for (let i = 1; i <= 3; i++) {
+                        ctx.beginPath();
+                        ctx.moveTo(character.x - character.width/2 - i * 10, character.y - character.height/2 - bodyBounce);
+                        ctx.lineTo(character.x - character.width/2 - i * 10 - 10, character.y - character.height/2 - bodyBounce);
+                        ctx.stroke();
+                    }
+                    
+                    // Increment frame counter
+                    state.frame++;
+                    
+                    // Continue animation loop if playing
+                    if (state.playing) {
+                        state.animation = requestAnimationFrame(animate);
+                    }
+                }
+                
+                // Start animation loop
+                animate();
+            },
+            
+            // 9. Timing
+            timing: function() {
+                const canvas = document.getElementById('timing-canvas');
+                const ctx = canvas.getContext('2d');
+                const state = animationStates.timing;
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Ball properties
+                const balls = [
+                    { x: 100, y: height/4, radius: 20, color: '#e74c3c', speed: 5, label: 'Fast' },
+                    { x: 100, y: height/2, radius: 20, color: '#f39c12', speed: 3, label: 'Medium' },
+                    { x: 100, y: 3*height/4, radius: 20, color: '#3498db', speed: 1, label: 'Slow' }
+                ];
+                
+                function animate() {
+                    // Clear canvas
+                    ctx.clearRect(0, 0, width, height);
+                    
+                    // Draw horizontal lanes
+                    for (let i = 0; i < balls.length; i++) {
+                        const y = height * (i + 1) / 4;
+                        
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                        ctx.setLineDash([5, 5]);
+                        ctx.beginPath();
+                        ctx.moveTo(50, y);
+                        ctx.lineTo(width - 50, y);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+                    
+                    // Update and draw balls
+                    for (let i = 0; i < balls.length; i++) {
+                        const ball = balls[i];
+                        
+                        // Update position
+                        ball.x += ball.speed;
+                        
+                        // Reset if ball reaches the edge
+                        if (ball.x > width - 100) {
+                            ball.x = 100;
+                        }
+                        
+                        // Draw ball
+                        ctx.beginPath();
+                        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = ball.color;
+                        ctx.fill();
+                        
+                        // Draw label
+                        ctx.fillStyle = 'white';
+                        ctx.font = '14px Arial';
+                        ctx.textAlign = 'left';
+                        ctx.fillText(ball.label, 20, ball.y + 5);
+                        
+                        // Draw speed indicator (number of frames)
+                        ctx.textAlign = 'right';
+                        ctx.fillText(`${Math.round(60/ball.speed)} frames to move 60px`, width - 20, ball.y + 5);
+                        
+                        // Draw motion lines
+                        ctx.strokeStyle = `${ball.color}80`;
+                        ctx.lineWidth = 2;
+                        
+                        for (let j = 1; j <= 3; j++) {
+                            const lineLength = ball.speed * 5;
+                            ctx.beginPath();
+                            ctx.moveTo(ball.x - ball.radius - j * 5, ball.y);
+                            ctx.lineTo(ball.x - ball.radius - j * 5 - lineLength, ball.y);
+                            ctx.stroke();
+                        }
+                    }
+                    
+                    // Draw explanation
+                    ctx.fillStyle = 'white';
+                    ctx.font = '14px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Timing affects the perceived weight and emotion of objects', width/2, 30);
+                    ctx.font = '12px Arial';
+                    ctx.fillText('Fast = Light/Energetic, Slow = Heavy/Thoughtful', width/2, 50);
+                    
+                    // Increment frame counter
+                    state.frame++;
+                    
+                    // Continue animation loop if playing
+                    if (state.playing) {
+                        state.animation = requestAnimationFrame(animate);
+                    }
+                }
+                
+                // Start animation loop
+                animate();
+            },
+            
+            // 10. Exaggeration
+            exaggeration: function() {
+                const canvas = document.getElementById('exaggeration-canvas');
+                const ctx = canvas.getContext('2d');
+                const state = animationStates.exaggeration;
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Character properties
+                const characters = [
+                    { x: width/4, y: height - 100, width: 40, height: 60, exaggerated: false, phase: 0 },
+                    { x: 3*width/4, y: height - 100, width: 40, height: 60, exaggerated: true, phase: 0 }
+                ];
+                
+                function animate() {
+                    // Clear canvas
+                    ctx.clearRect(0, 0, width, height);
+                    
+                    // Draw floor
+                    ctx.fillStyle = '#333';
+                    ctx.fillRect(0, height - 50, width, 50);
+                    
+                    // Draw dividing line
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                    ctx.beginPath();
+                    ctx.moveTo(width/2, 50);
+                    ctx.lineTo(width/2, height - 50);
+                    ctx.stroke();
+                    
+                    // Update character phases
+                    for (let i = 0; i < characters.length; i++) {
+                        const char = characters[i];
+                        
+                        // Each cycle is 120 frames
+                        const animationCycle = 120;
+                        char.phase = (state.frame % animationCycle) / animationCycle;
+                        
+                        // Draw character based on phase
+                        drawCharacter(char);
+                    }
+                    
+                    // Draw labels
+                    ctx.fillStyle = 'white';
+                    ctx.font = '14px Arial';
+                    ctx.textAlign = 'center';
+                    
+                    ctx.fillText('Realistic', width/4, height - 20);
+                    ctx.fillText('Exaggerated', 3*width/4, height - 20);
+                    ctx.fillText('Exaggeration makes animation more dynamic and readable', width/2, 30);
+                    
+                    // Increment frame counter
+                    state.frame++;
+                    
+                    // Continue animation loop if playing
+                    if (state.playing) {
+                        state.animation = requestAnimationFrame(animate);
+                    }
+                }
+                
+                function drawCharacter(char) {
+                    // Different animation phases:
+                    // 0-0.2: Anticipation (crouch)
+                    // 0.2-0.5: Action (jump up)
+                    // 0.5-0.8: Height of jump
+                    // 0.8-1.0: Landing
+                    
+                    let bodyHeight = char.height;
+                    let bodyWidth = char.width;
+                    let yOffset = 0;
+                    let squashFactor = 1;
+                    let stretchFactor = 1;
+                    
+                    if (char.phase < 0.2) {
+                        // Anticipation - crouch down
+                        const anticipationProgress = char.phase / 0.2;
+                        
+                        if (char.exaggerated) {
+                            bodyHeight = char.height * (1 - anticipationProgress * 0.4);
+                            bodyWidth = char.width * (1 + anticipationProgress * 0.5);
+                            squashFactor = 1 + anticipationProgress * 0.5;
+                            stretchFactor = 1 - anticipationProgress * 0.3;
+                        } else {
+                            bodyHeight = char.height * (1 - anticipationProgress * 0.1);
+                            bodyWidth = char.width * (1 + anticipationProgress * 0.1);
+                            squashFactor = 1 + anticipationProgress * 0.1;
+                            stretchFactor = 1 - anticipationProgress * 0.1;
+                        }
+                    } else if (char.phase < 0.5) {
+                        // Action - jumping up
+                        const actionProgress = (char.phase - 0.2) / 0.3;
+                        
+                        if (char.exaggerated) {
+                            bodyHeight = char.height * (1 + actionProgress * 0.5);
+                            bodyWidth = char.width * (1 - actionProgress * 0.3);
+                            yOffset = -actionProgress * 120;
+                            squashFactor = 1 - actionProgress * 0.3;
+                            stretchFactor = 1 + actionProgress * 0.5;
+                        } else {
+                            bodyHeight = char.height * (1 + actionProgress * 0.1);
+                            bodyWidth = char.width * (1 - actionProgress * 0.1);
+                            yOffset = -actionProgress * 60;
+                            squashFactor = 1 - actionProgress * 0.1;
+                            stretchFactor = 1 + actionProgress * 0.1;
+                        }
+                    } else if (char.phase < 0.8) {
+                        // Height of jump
+                        const heightProgress = (char.phase - 0.5) / 0.3;
+                        
+                        if (char.exaggerated) {
+                            const jumpCurve = Math.sin(heightProgress * Math.PI);
+                            yOffset = -120 + jumpCurve * 20;
+                            bodyHeight = char.height * 1.3;
+                            bodyWidth = char.width * 0.8;
+                        } else {
+                            yOffset = -60;
+                            bodyHeight = char.height * 1.1;
+                            bodyWidth = char.width * 0.9;
+                        }
+                    } else {
+                        // Landing
+                        const landingProgress = (char.phase - 0.8) / 0.2;
+                        
+                        if (char.exaggerated) {
+                            yOffset = -120 * (1 - landingProgress);
+                            bodyHeight = char.height * (1.5 - landingProgress * 0.9);
+                            bodyWidth = char.width * (0.7 + landingProgress * 0.6);
+                            squashFactor = 0.7 + landingProgress * 0.6;
+                            stretchFactor = 1.5 - landingProgress * 0.5;
+                        } else {
+                            yOffset = -60 * (1 - landingProgress);
+                            bodyHeight = char.height * (1.1 - landingProgress * 0.1);
+                            bodyWidth = char.width * (0.9 + landingProgress * 0.1);
+                            squashFactor = 0.9 + landingProgress * 0.1;
+                            stretchFactor = 1.1 - landingProgress * 0.1;
+                        }
+                    }
+                    
+                    // Draw body
+                    ctx.fillStyle = char.exaggerated ? '#e74c3c' : '#3498db';
+                    
+                    // Apply transformations
+                    ctx.save();
+                    ctx.translate(char.x, char.y + yOffset);
+                    ctx.scale(squashFactor, stretchFactor);
+                    
+                    // Body
+                    ctx.fillRect(-bodyWidth/2, -bodyHeight, bodyWidth, bodyHeight);
+                    
+                    // Head
+                    ctx.beginPath();
+                    const headRadius = 15 * (char.exaggerated ? 
+                                           (char.phase < 0.5 ? 1 + (char.phase / 0.5) * 0.3 : 1.3) :
+                                           1);
+                    ctx.arc(0, -bodyHeight - headRadius, headRadius, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Arms
+                    const armLength = 25 * (char.exaggerated && char.phase > 0.2 && char.phase < 0.5 ? 
+                                          1 + ((char.phase - 0.2) / 0.3) * 0.5 : 
+                                          1);
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(-bodyWidth/2, -bodyHeight + 10);
+                    
+                    if (char.phase < 0.2) {
+                        // Arms down in anticipation
+                        ctx.lineTo(-bodyWidth/2 - 10, -bodyHeight + 20);
+                    } else if (char.phase < 0.5) {
+                        // Arms going up during jump
+                        const armAngle = ((char.phase - 0.2) / 0.3) * Math.PI * 0.8;
+                        ctx.lineTo(-bodyWidth/2 - armLength * Math.cos(armAngle), 
+                                  -bodyHeight + 10 - armLength * Math.sin(armAngle));
+                    } else {
+                        // Arms up at height of jump
+                        ctx.lineTo(-bodyWidth/2 - 5, -bodyHeight - 15);
+                    }
+                    
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(bodyWidth/2, -bodyHeight + 10);
+                    
+                    if (char.phase < 0.2) {
+                        // Arms down in anticipation
+                        ctx.lineTo(bodyWidth/2 + 10, -bodyHeight + 20);
+                    } else if (char.phase < 0.5) {
+                        // Arms going up during jump
+                        const armAngle = ((char.phase - 0.2) / 0.3) * Math.PI * 0.8;
+                        ctx.lineTo(bodyWidth/2 + armLength * Math.cos(armAngle), 
+                                  -bodyHeight + 10 - armLength * Math.sin(armAngle));
+                    } else {
+                        // Arms up at height of jump
+                        ctx.lineTo(bodyWidth/2 + 5, -bodyHeight - 15);
+                    }
+                    
+                    ctx.stroke();
+                    
+                    // Restore canvas state
+                    ctx.restore();
+                    
+                    // Draw motion lines for exaggerated character during anticipation
+                    if (char.exaggerated && char.phase < 0.2) {
+                        const anticipationProgress = char.phase / 0.2;
+                        ctx.strokeStyle = 'rgba(255, 255, 255, ' + anticipationProgress * 0.5 + ')';
+                        ctx.lineWidth = 2;
+                        
+                        // Squash lines
+                        const lines = 5;
+                        for (let i = 0; i < lines; i++) {
+                            const lineY = char.y - char.height * (1 - i/lines);
+                            ctx.beginPath();
+                            ctx.moveTo(char.x - 30, lineY);
+                            ctx.lineTo(char.x + 30, lineY);
+                            ctx.stroke();
+                        }
+                    }
+                    
+                    // Draw motion lines for exaggerated character during jump
+                    if (char.exaggerated && char.phase >= 0.2 && char.phase < 0.5) {
+                        const jumpProgress = (char.phase - 0.2) / 0.3;
+                        ctx.strokeStyle = 'rgba(255, 255, 255, ' + (1 - jumpProgress) * 0.5 + ')';
+                        ctx.lineWidth = 2;
+                        
+                        const lines = 5;
+                        for (let i = 0; i < lines; i++) {
+                            const lineY = char.y - i * 15;
+                            const offsetX = 10 * (1 - i/lines) * jumpProgress;
+                            ctx.beginPath();
+                            ctx.moveTo(char.x - 15 - offsetX, lineY);
+                            ctx.lineTo(char.x + 15 + offsetX, lineY);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                
+                // Start animation loop
+                animate();
+            },
+            
+            // 11. Solid Drawing
+            solid: function() {
+                const canvas = document.getElementById('solid-canvas');
+                const ctx = canvas.getContext('2d');
+                const state = animationStates.solid;
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Object properties
+                const box = {
+                    centerX: width / 2,
+                    centerY: height / 2,
+                    size: 80,
+                    rotation: 0
+                };
+                
+                function animate() {
+                    // Clear canvas
+                    ctx.clearRect(0, 0, width, height);
+                    
+                    // Update rotation
+                    box.rotation = (state.frame * 0.01) % (Math.PI * 2);
+                    
+                    // Draw background grid for perspective
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+                    ctx.lineWidth = 1;
+                    
+                    for (let i = 0; i < width; i += 20) {
+                        ctx.beginPath();
+                        ctx.moveTo(i, 0);
+                        ctx.lineTo(i, height);
+                        ctx.stroke();
+                    }
+                    
+                    for (let i = 0; i < height; i += 20) {
+                        ctx.beginPath();
+                        ctx.moveTo(0, i);
+                        ctx.lineTo(width, i);
+                        ctx.stroke();
+                    }
+                    
+                    // Draw 3D box with consistent volume
+                    drawBox(box.centerX, box.centerY, box.size, box.rotation);
+                    
+                    // Draw guide info
+                    ctx.fillStyle = 'white';
+                    ctx.font = '14px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Solid Drawing: Maintaining consistent volume in 3D space', width/2, 30);
+                    
+                    // Increment frame counter
+                    state.frame++;
+                    
+                    // Continue animation loop if playing
+                    if (state.playing) {
+                        state.animation = requestAnimationFrame(animate);
+                    }
+                }
+                
+                function drawBox(x, y, size, rotation) {
+                    // Define cube vertices (local coordinates)
+                    const vertices = [
+                        // Front face
+                        [-1, -1, 1],  // Front bottom left
+                        [1, -1, 1],   // Front bottom right
+                        [1, 1, 1],    // Front top right
+                        [-1, 1, 1],   // Front top left
+                        
+                        // Back face
+                        [-1, -1, -1], // Back bottom left
+                        [1, -1, -1],  // Back bottom right
+                        [1, 1, -1],   // Back top right
+                        [-1, 1, -1]   // Back top left
+                    ];
+                    
+                    // Define cube edges
+                    const edges = [
+                        [0, 1], [1, 2], [2, 3], [3, 0], // Front face
+                        [4, 5], [5, 6], [6, 7], [7, 4], // Back face
+                        [0, 4], [1, 5], [2, 6], [3, 7]  // Connecting edges
+                    ];
+                    
+                    // Define faces for solid drawing
+                    const faces = [
+                        [0, 1, 2, 3], // Front
+                        [5, 4, 7, 6], // Back
+                        [4, 0, 3, 7], // Left
+                        [1, 5, 6, 2], // Right
+                        [3, 2, 6, 7], // Top
+                        [4, 5, 1, 0]  // Bottom
+                    ];
+                    
+                    // Face colors
+                    const colors = [
+                        '#3498db', // Front - Blue
+                        '#e74c3c', // Back - Red
+                        '#2ecc71', // Left - Green
+                        '#f39c12', // Right - Orange
+                        '#9b59b6', // Top - Purple
+                        '#1abc9c'  // Bottom - Teal
+                    ];
+                    
+                    // Transform vertices to 3D
+                    const transformed = [];
+                    const rotationY = rotation;
+                    const rotationX = rotation * 0.5;
+                    
+                    for (let i = 0; i < vertices.length; i++) {
+                        const v = vertices[i];
+                        
+                        // Apply rotation around Y axis
+                        let x1 = v[0];
+                        let z1 = v[2];
+                        
+                        let x2 = x1 * Math.cos(rotationY) - z1 * Math.sin(rotationY);
+                        let z2 = z1 * Math.cos(rotationY) + x1 * Math.sin(rotationY);
+                        
+                        // Apply rotation around X axis
+                        let y1 = v[1];
+                        let z3 = z2;
+                        
+                        let y2 = y1 * Math.cos(rotationX) - z3 * Math.sin(rotationX);
+                        let z4 = z3 * Math.cos(rotationX) + y1 * Math.sin(rotationX);
+                        
+                        // Scale and translate to screen coordinates
+                        const scale = size / 2;
+                        transformed.push([
+                            x + x2 * scale,
+                            y + y2 * scale,
+                            z4
+                        ]);
+                    }
+                    
+                    // Sort faces by depth
+                    const sortedFaces = [];
+                    for (let i = 0; i < faces.length; i++) {
+                        const face = faces[i];
+                        // Calculate average Z of face
+                        let avgZ = 0;
+                        for (let j = 0; j < face.length; j++) {
+                            avgZ += transformed[face[j]][2];
+                        }
+                        avgZ /= face.length;
+                        
+                        sortedFaces.push({
+                            face: face,
+                            color: colors[i],
+                            depth: avgZ
+                        });
+                    }
+                    
+                    // Sort back to front for proper overlay
+                    sortedFaces.sort((a, b) => a.depth - b.depth);
+                    
+                    // Draw faces
+                    for (let i = 0; i < sortedFaces.length; i++) {
+                        const faceData = sortedFaces[i];
+                        const face = faceData.face;
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(transformed[face[0]][0], transformed[face[0]][1]);
+                        
+                        for (let j = 1; j < face.length; j++) {
+                            ctx.lineTo(transformed[face[j]][0], transformed[face[j]][1]);
+                        }
+                        
+                        ctx.closePath();
+                        ctx.fillStyle = faceData.color;
+                        ctx.fill();
+                        
+                        // Draw edges for clearer form
+                        ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                    
+                    // Draw volume indicator lines
+                    ctx.setLineDash([2, 2]);
+                    ctx.strokeStyle = 'white';
+                    ctx.lineWidth = 1;
+                    
+                    // Draw center cross
+                    ctx.beginPath();
+                    ctx.moveTo(x - size/2, y);
+                    ctx.lineTo(x + size/2, y);
+                    ctx.moveTo(x, y - size/2);
+                    ctx.lineTo(x, y + size/2);
+                    ctx.stroke();
+                    
+                    ctx.setLineDash([]);
+                }
+                
+                // Start animation loop
+                animate();
+            },
+            
+            // 12. Appeal
+            appeal: function() {
+                const canvas = document.getElementById('appeal-canvas');
+                const ctx = canvas.getContext('2d');
+                const state = animationStates.appeal;
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Character designs with different appeal
+                const characters = [
+                    {
+                        name: 'Simple & Appealing',
+                        x: width * 0.25,
+                        y: height * 0.5,
+                        draw: function(frame) {
+                            // Draw with simple, clear shapes
+                            ctx.save();
+                            ctx.translate(this.x, this.y);
+                            
+                            // Body
+                            ctx.fillStyle = '#3498db';
+                            ctx.beginPath();
+                            ctx.arc(0, 0, 40, 0, Math.PI * 2);
+                            ctx.fill();
+                            
+                            // Eyes
+                            const blinkState = Math.floor(frame / 50) % 3 === 0 ? 'closed' : 'open';
+                            
+                            if (blinkState === 'open') {
+                                ctx.fillStyle = 'white';
+                                ctx.beginPath();
+                                ctx.arc(-15, -10, 10, 0, Math.PI * 2);
+                                ctx.arc(15, -10, 10, 0, Math.PI * 2);
+                                ctx.fill();
+                                
+                                // Pupils
+                                ctx.fillStyle = 'black';
+                                ctx.beginPath();
+                                ctx.arc(-15 + Math.sin(frame * 0.02) * 3, -10, 5, 0, Math.PI * 2);
+                                ctx.arc(15 + Math.sin(frame * 0.02) * 3, -10, 5, 0, Math.PI * 2);
+                                ctx.fill();
+                            } else {
+                                // Closed eyes
+                                ctx.strokeStyle = 'white';
+                                ctx.lineWidth = 2;
+                                ctx.beginPath();
+                                ctx.moveTo(-20, -10);
+                                ctx.lineTo(-10, -10);
+                                ctx.moveTo(10, -10);
+                                ctx.lineTo(20, -10);
+                                ctx.stroke();
+                            }
+                            
+                            // Mouth
+                            ctx.strokeStyle = 'white';
+                            ctx.lineWidth = 3;
+                            ctx.beginPath();
+                            
+                            // Smile with slight movement
+                            const smileAmount = 0.8 + Math.sin(frame * 0.05) * 0.2;
+                            ctx.arc(0, 5, 20, 0, Math.PI * smileAmount);
+                            ctx.stroke();
+                            
+                            ctx.restore();
+                        }
+                    },
+                    {
+                        name: 'Complex & Confusing',
+                        x: width * 0.75,
+                        y: height * 0.5,
+                        draw: function(frame) {
+                            // Draw with overly complex, unclear design
+                            ctx.save();
+                            ctx.translate(this.x, this.y);
+                            
+                            // Irregular body shape
+                            ctx.fillStyle = '#9b59b6';
+                            ctx.beginPath();
+                            ctx.moveTo(-30, -30);
+                            ctx.lineTo(-40, -10);
+                            ctx.lineTo(-35, 20);
+                            ctx.lineTo(-20, 30);
+                            ctx.lineTo(0, 35);
+                            ctx.lineTo(20, 30);
+                            ctx.lineTo(35, 20);
+                            ctx.lineTo(40, -10);
+                            ctx.lineTo(30, -30);
+                            ctx.lineTo(10, -35);
+                            ctx.lineTo(-10, -35);
+                            ctx.closePath();
+                            ctx.fill();
+                            
+                            // Too many features/details
+                            // Multiple asymmetrical eyes
+                            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                            ctx.beginPath();
+                            ctx.ellipse(-20, -15, 8, 6, 0, 0, Math.PI * 2);
+                            ctx.ellipse(15, -20, 10, 5, 0.5, 0, Math.PI * 2);
+                            ctx.ellipse(0, 0, 5, 5, 0, 0, Math.PI * 2);
+                            ctx.fill();
+                            
+                            // Random spots
+                            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                            for (let i = 0; i < 8; i++) {
+                                ctx.beginPath();
+                                ctx.arc(
+                                    Math.cos(i + frame * 0.01) * 20,
+                                    Math.sin(i + frame * 0.01) * 20,
+                                    2 + Math.sin(frame * 0.05 + i) * 1,
+                                    0, Math.PI * 2
+                                );
+                                ctx.fill();
+                            }
+                            
+                            // Confusing mouth
+                            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                            ctx.lineWidth = 1;
+                            ctx.beginPath();
+                            ctx.moveTo(-25, 15);
+                            ctx.quadraticCurveTo(-10, 25, 5, 15);
+                            ctx.quadraticCurveTo(20, 5, 25, 15);
+                            ctx.stroke();
+                            
+                            ctx.restore();
+                        }
+                    }
+                ];
+                
+                function animate() {
+                    // Clear canvas
+                    ctx.clearRect(0, 0, width, height);
+                    
+                    // Draw dividing line
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                    ctx.setLineDash([5, 5]);
+                    ctx.beginPath();
+                    ctx.moveTo(width/2, 50);
+                    ctx.lineTo(width/2, height - 50);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    
+                    // Draw characters
+                    for (let i = 0; i < characters.length; i++) {
+                        const char = characters[i];
+                        
+                        // Draw character
+                        char.draw(state.frame);
+                        
+                        // Draw name
+                        ctx.fillStyle = 'black';
+                        ctx.font = '14px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(char.name, char.x, char.y + 70);
+                        
+                        // Draw appeal characteristics
+                        if (i === 0) {
+                            ctx.font = '12px Arial';
+                            ctx.fillText('Clear silhouette', char.x, char.y + 90);
+                            ctx.fillText('Simple shapes', char.x, char.y + 110);
+                            ctx.fillText('Focused design', char.x, char.y + 130);
+                        } else {
+                            ctx.font = '12px Arial';
+                            ctx.fillText('Unclear silhouette', char.x, char.y + 90);
+                            ctx.fillText('Too many details', char.x, char.y + 110);
+                            ctx.fillText('Confusing design', char.x, char.y + 130);
+                        }
+                    }
+                    
+                    // Draw title
+                    ctx.fillStyle = 'black';
+                    ctx.font = '14px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Appeal: Creating designs that connect with the audience', width/2, 30);
+                    
+                    // Increment frame counter
+                    state.frame++;
+                    
+                    // Continue animation loop if playing
+                    if (state.playing) {
+                        state.animation = requestAnimationFrame(animate);
+                    }
+                }
+                
+                // Start animation loop
+                animate();
+            }
+        };
+        
+        // Reset functions for each animation
+        const resetFunctions = {
+            squash: function() {
+                const canvas = document.getElementById('squash-canvas');
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw floor
+                ctx.fillStyle = '#333';
+                ctx.fillRect(0, height - 50, width, 2);
+                
+                // Draw initial ball
+                ctx.beginPath();
+                ctx.arc(width / 2, 50, 30, 0, Math.PI * 2);
+                ctx.fillStyle = '#e74c3c';
+                ctx.fill();
+                
+                // Draw a line in the ball
+                ctx.beginPath();
+                ctx.moveTo((width / 2) - 21, 50);
+                ctx.lineTo((width / 2) + 21, 50);
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            },
+            
+            anticipation: function() {
+                const canvas = document.getElementById('anticipation-canvas');
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw floor
+                ctx.fillStyle = '#333';
+                ctx.fillRect(0, height - 50, width, 50);
+                
+                // Draw character
+                ctx.fillStyle = '#3498db';
+                ctx.fillRect((width / 2) - 25, height - 140, 50, 80);
+                
+                // Draw head
+                ctx.beginPath();
+                ctx.arc(width / 2, height - 160, 15, 0, Math.PI * 2);
+                ctx.fill();
+            },
+            
+            staging: function() {
+                const canvas = document.getElementById('staging-canvas');
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw background grid
+                ctx.strokeStyle = 'rgba(200, 200, 200, 0.2)';
+                ctx.lineWidth = 1;
+                
+                for(let i = 0; i < width; i += 50) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, height);
+                    ctx.stroke();
+                }
+                
+                for(let i = 0; i < height; i += 50) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, i);
+                    ctx.lineTo(width, i);
+                    ctx.stroke();
+                }
+                
+                // Draw elements
+                const elements = [
+                    { x: 100, y: height/2, radius: 30, color: '#e74c3c', highlight: false },
+                    { x: width/2, y: height/2, radius: 30, color: '#3498db', highlight: true },
+                    { x: width-100, y: height/2, radius: 30, color: '#2ecc71', highlight: false }
+                ];
+                
+                elements.forEach(el => {
+                    ctx.beginPath();
+                    ctx.arc(el.x, el.y, el.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = el.color;
+                    ctx.fill();
+                });
+                
+                // Highlight middle element
+                const spotlightRadius = 100;
+                const gradient = ctx.createRadialGradient(
+                    width/2, height/2, 0,
+                    width/2, height/2, spotlightRadius
+                );
+                
+                gradient.addColorStop(0, 'rgba(255, 255, 255, 0.3)');
+                gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(width/2, height/2, spotlightRadius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Draw dimming overlay except for spotlight
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                ctx.fillRect(0, 0, width, height);
+                
+                // Clear spotlight area
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath();
+                ctx.arc(width/2, height/2, spotlightRadius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalCompositeOperation = 'source-over';
+                
+                // Redraw highlighted element
+                ctx.beginPath();
+                ctx.arc(width/2, height/2, 30, 0, Math.PI * 2);
+                ctx.fillStyle = '#3498db';
+                ctx.fill();
+                
+                // Add glow
+                ctx.beginPath();
+                ctx.arc(width/2, height/2, 33, 0, Math.PI * 2);
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                
+                // Label
+                ctx.fillStyle = 'white';
+                ctx.font = '16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Focus Here', width/2, height/2 - 50);
+            },
+            
+            straight: function() {
+                const canvas = document.getElementById('straight-canvas');
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw floor
+                ctx.fillStyle = '#333';
+                ctx.fillRect(0, height - 50, width, 50);
+                
+                // Draw dividing line
+                ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+                ctx.beginPath();
+                ctx.moveTo(width/2, 50);
+                ctx.lineTo(width/2, height - 50);
+                ctx.stroke();
+                
+                // Draw straight ahead character
+                const leftX = width * 0.25;
+                const rightX = width * 0.75;
+                const baseY = height - 80;
+                
+                // Draw characters
+                ctx.fillStyle = '#e74c3c';
+                ctx.beginPath();
+                ctx.moveTo(leftX - 15, baseY);
+                ctx.quadraticCurveTo(leftX - 20, baseY - 30, leftX, baseY - 60);
+                ctx.quadraticCurveTo(leftX + 20, baseY - 30, leftX + 15, baseY);
+                ctx.closePath();
+                ctx.fill();
+                
+                ctx.beginPath();
+                ctx.arc(leftX, baseY - 60, 15, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Draw pose to pose character
+                ctx.fillStyle = '#3498db';
+                ctx.fillRect(rightX - 15, baseY - 60, 30, 60);
+                ctx.beginPath();
+                ctx.arc(rightX, baseY - 75, 15, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Draw labels
+                ctx.fillStyle = 'white';
+                ctx.font = '14px Arial';
+                ctx.textAlign = 'center';
+                
+                ctx.fillText('Straight Ahead', leftX, height - 30);
+                ctx.fillText('Pose to Pose', rightX, height - 30);
+            },
+            
+            follow: function() {
+                const canvas = document.getElementById('follow-canvas');
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw floor
+                ctx.fillStyle = '#333';
+                ctx.fillRect(0, height - 50, width, 2);
+                
+                // Draw character
+                const x = 100;
+                const y = height - 100;
+                const charWidth = 40;
+                const charHeight = 70;
+                
+                ctx.fillStyle = '#3498db';
+                ctx.fillRect(x, y - charHeight, charWidth, charHeight);
+                
+                // Draw head
+                ctx.beginPath();
+                ctx.arc(x + charWidth / 2, y - charHeight - 15, 15, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Draw tail/hair segments
+                ctx.fillStyle = '#e74c3c';
+                for (let i = 0; i < 8; i++) {
+                    const size = 8 - i * 0.5;
+                    ctx.beginPath();
+                    ctx.arc(x + charWidth / 2, y - charHeight - 5 - (i * 5), size, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(231, 76, 60, ${1 - i * 0.1})`;
+                    ctx.fill();
+                }
+            },
+            
+            slow: function() {
+                const canvas = document.getElementById('slow-canvas');
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw track
+                ctx.strokeStyle = '#ccc';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(100, height/2);
+                ctx.lineTo(width - 100, height/2);
+                ctx.stroke();
+                
+                // Draw balls
+                ctx.beginPath();
+                ctx.arc(100, height/2, 25, 0, Math.PI * 2);
+                ctx.fillStyle = '#e74c3c';
+                ctx.fill();
+                
+                ctx.beginPath();
+                ctx.arc(100, height/2, 25, 0, Math.PI * 2);
+                ctx.fillStyle = '#3498db';
+                ctx.fill();
+                
+                // Draw ball labels
+                ctx.fillStyle = 'white';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Linear', 100, height/2 + 45);
+                ctx.fillText('Eased', 100, height/2 + 45);
+            },
+            
+            arc: function() {
+                const canvas = document.getElementById('arc-canvas');
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw paths
+                // Straight path
+                ctx.strokeStyle = 'rgba(231, 76, 60, 0.3)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(100, height/2);
+                ctx.lineTo(width - 100, height/2);
+                ctx.stroke();
+                
+                // Arc path
+                ctx.strokeStyle = 'rgba(52, 152, 219, 0.3)';
+                ctx.beginPath();
+                ctx.moveTo(100, height/2);
+                ctx.quadraticCurveTo(width/2, height/2 - 100, width - 100, height/2);
+                ctx.stroke();
+                
+                // Draw balls
+                ctx.beginPath();
+                ctx.arc(100, height/2, 20, 0, Math.PI * 2);
+                ctx.fillStyle = '#e74c3c';
+                ctx.fill();
+                
+                ctx.beginPath();
+                ctx.arc(100, height/2, 20, 0, Math.PI * 2);
+                ctx.fillStyle = '#3498db';
+                ctx.fill();
+                
+                // Draw explanatory text
+                ctx.fillStyle = 'white';
+                ctx.font = '14px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Movement along arcs feels more natural and organic', width/2, 40);
+            },
+            
+            secondary: function() {
+                const canvas = document.getElementById('secondary-canvas');
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw floor
+                ctx.fillStyle = '#333';
+                ctx.fillRect(0, height - 50, width, 2);
+                
+                // Draw girl character - static version for reset
+                const x = 100;
+                const y = height - 100;
+                const charWidth = 35;
+                const charHeight = 70;
+                
+                // Draw legs
+                ctx.strokeStyle = '#e74c3c';
+                ctx.lineWidth = 3;
+                
+                // Left leg
+                ctx.beginPath();
+                ctx.moveTo(x - 5, y - charHeight + 30);
+                ctx.lineTo(x - 8, y - 5);
+                ctx.stroke();
+                
+                // Right leg
+                ctx.beginPath();
+                ctx.moveTo(x + 5, y - charHeight + 30);
+                ctx.lineTo(x + 8, y - 5);
+                ctx.stroke();
+                
+                // Draw dress/skirt
+                ctx.fillStyle = '#e74c3c';
+                ctx.beginPath();
+                ctx.moveTo(x - charWidth/2, y - charHeight + 30);
+                ctx.lineTo(x + charWidth/2, y - charHeight + 30);
+                ctx.lineTo(x + charWidth/2 + 5, y - charHeight + 50);
+                ctx.lineTo(x - charWidth/2 - 5, y - charHeight + 50);
+                ctx.closePath();
+                ctx.fill();
+                
+                // Draw body
+                ctx.fillRect(x - charWidth/2 + 5, y - charHeight + 30, charWidth - 10, 30);
+                
+                // Draw arms
+                ctx.beginPath();
+                ctx.moveTo(x - charWidth/4, y - charHeight + 35);
+                ctx.lineTo(x - charWidth/4 - 10, y - charHeight + 35);
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.moveTo(x + charWidth/4, y - charHeight + 35);
+                ctx.lineTo(x + charWidth/4 + 10, y - charHeight + 35);
+                ctx.stroke();
+                
+                // Draw head
+                ctx.beginPath();
+                ctx.arc(x, y - charHeight, 15, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Draw hair
+                ctx.beginPath();
+                ctx.arc(x, y - charHeight - 3, 16, Math.PI, 0, true);
+                ctx.fill();
+                
+                // Draw ponytail
+                ctx.beginPath();
+                ctx.moveTo(x, y - charHeight - 5);
+                ctx.quadraticCurveTo(x + 15, y - charHeight + 10, x + 25, y - charHeight + 20);
+                ctx.lineWidth = 6;
+                ctx.stroke();
+                
+                // Draw face features
+                ctx.fillStyle = 'white';
+                ctx.beginPath();
+                ctx.arc(x - 5, y - charHeight - 2, 3, 0, Math.PI * 2);
+                ctx.arc(x + 5, y - charHeight - 2, 3, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.fillStyle = 'black';
+                ctx.beginPath();
+                ctx.arc(x - 5, y - charHeight - 2, 1.5, 0, Math.PI * 2);
+                ctx.arc(x + 5, y - charHeight - 2, 1.5, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Draw mouth/smile
+                ctx.beginPath();
+                ctx.strokeStyle = 'black';
+                ctx.lineWidth = 1;
+                ctx.arc(x, y - charHeight + 5, 5, 0.2, Math.PI - 0.2);
+                ctx.stroke();
+                
+                // Draw status indicator
+                ctx.fillStyle = 'white';
+                ctx.font = '14px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Walking with Secondary Action (chewing gum)', width/2, 40);
+            },
+            
+            timing: function() {
+                const canvas = document.getElementById('timing-canvas');
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw horizontal lanes
+                for (let i = 0; i < 3; i++) {
+                    const y = height * (i + 1) / 4;
+                    
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                    ctx.setLineDash([5, 5]);
+                    ctx.beginPath();
+                    ctx.moveTo(50, y);
+                    ctx.lineTo(width - 50, y);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+                
+                // Draw balls
+                const balls = [
+                    { y: height/4, radius: 20, color: '#e74c3c', label: 'Fast' },
+                    { y: height/2, radius: 20, color: '#f39c12', label: 'Medium' },
+                    { y: 3*height/4, radius: 20, color: '#3498db', label: 'Slow' }
+                ];
+                
+                for (let i = 0; i < balls.length; i++) {
+                    const ball = balls[i];
+                    
+                    // Draw ball
+                    ctx.beginPath();
+                    ctx.arc(100, ball.y, ball.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = ball.color;
+                    ctx.fill();
+                    
+                    // Draw label
+                    ctx.fillStyle = 'white';
+                    ctx.font = '14px Arial';
+                    ctx.textAlign = 'left';
+                    ctx.fillText(ball.label, 20, ball.y + 5);
+                }
+                
+                // Draw explanation
+                ctx.fillStyle = 'white';
+                ctx.font = '14px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Timing affects the perceived weight and emotion of objects', width/2, 30);
+            },
+            
+            exaggeration: function() {
+                const canvas = document.getElementById('exaggeration-canvas');
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw floor
+                ctx.fillStyle = '#333';
+                ctx.fillRect(0, height - 50, width, 50);
+                
+                // Draw dividing line
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                ctx.beginPath();
+                ctx.moveTo(width/2, 50);
+                ctx.lineTo(width/2, height - 50);
+                ctx.stroke();
+                
+                // Draw characters
+                // Realistic character
+                ctx.fillStyle = '#3498db';
+                ctx.fillRect(width/4 - 20, height - 110, 40, 60);
+                ctx.beginPath();
+                ctx.arc(width/4, height - 125, 15, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Exaggerated character
+                ctx.fillStyle = '#e74c3c';
+                ctx.fillRect(3*width/4 - 20, height - 110, 40, 60);
+                ctx.beginPath();
+                ctx.arc(3*width/4, height - 125, 15, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Draw labels
+                ctx.fillStyle = 'white';
+                ctx.font = '14px Arial';
+                ctx.textAlign = 'center';
+                
+                ctx.fillText('Realistic', width/4, height - 20);
+                ctx.fillText('Exaggerated', 3*width/4, height - 20);
+                ctx.fillText('Exaggeration makes animation more dynamic and readable', width/2, 30);
+            },
+            
+            solid: function() {
+                const canvas = document.getElementById('solid-canvas');
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw background grid for perspective
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.lineWidth = 1;
+                
+                for (let i = 0; i < width; i += 20) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, height);
+                    ctx.stroke();
+                }
+                
+                for (let i = 0; i < height; i += 20) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, i);
+                    ctx.lineTo(width, i);
+                    ctx.stroke();
+                }
+                
+                // Draw cube
+                const box = {
+                    centerX: width / 2,
+                    centerY: height / 2,
+                    size: 80,
+                    rotation: 0
+                };
+                
+                // Define cube vertices (local coordinates)
+                const vertices = [
+                    // Front face
+                    [-1, -1, 1],  // Front bottom left
+                    [1, -1, 1],   // Front bottom right
+                    [1, 1, 1],    // Front top right
+                    [-1, 1, 1],   // Front top left
+                    
+                    // Back face
+                    [-1, -1, -1], // Back bottom left
+                    [1, -1, -1],  // Back bottom right
+                    [1, 1, -1],   // Back top right
+                    [-1, 1, -1]   // Back top left
+                ];
+                
+                // Define faces for solid drawing
+                const faces = [
+                    [0, 1, 2, 3], // Front
+                    [5, 4, 7, 6], // Back
+                    [4, 0, 3, 7], // Left
+                    [1, 5, 6, 2], // Right
+                    [3, 2, 6, 7], // Top
+                    [4, 5, 1, 0]  // Bottom
+                ];
+                
+                // Face colors
+                const colors = [
+                    '#3498db', // Front - Blue
+                    '#e74c3c', // Back - Red
+                    '#2ecc71', // Left - Green
+                    '#f39c12', // Right - Orange
+                    '#9b59b6', // Top - Purple
+                    '#1abc9c'  // Bottom - Teal
+                ];
+                
+                // Transform and draw a simple cube
+                const transformed = [];
+                const x = box.centerX;
+                const y = box.centerY;
+                const scale = box.size / 2;
+                
+                for (let i = 0; i < vertices.length; i++) {
+                    const v = vertices[i];
+                    transformed.push([
+                        x + v[0] * scale,
+                        y + v[1] * scale,
+                        v[2]
+                    ]);
+                }
+                
+                // Sort faces by depth
+                const sortedFaces = [];
+                for (let i = 0; i < faces.length; i++) {
+                    const face = faces[i];
+                    // Calculate average Z of face
+                    let avgZ = 0;
+                    for (let j = 0; j < face.length; j++) {
+                        avgZ += transformed[face[j]][2];
+                    }
+                    avgZ /= face.length;
+                    
+                    sortedFaces.push({
+                        face: face,
+                        color: colors[i],
+                        depth: avgZ
+                    });
+                }
+                
+                // Sort back to front for proper overlay
+                sortedFaces.sort((a, b) => a.depth - b.depth);
+                
+                // Draw faces
+                for (let i = 0; i < sortedFaces.length; i++) {
+                    const faceData = sortedFaces[i];
+                    const face = faceData.face;
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(transformed[face[0]][0], transformed[face[0]][1]);
+                    
+                    for (let j = 1; j < face.length; j++) {
+                        ctx.lineTo(transformed[face[j]][0], transformed[face[j]][1]);
+                    }
+                    
+                    ctx.closePath();
+                    ctx.fillStyle = faceData.color;
+                    ctx.fill();
+                    
+                    // Draw edges for clearer form
+                    ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+                
+                // Draw volume indicator lines
+                ctx.setLineDash([2, 2]);
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 1;
+                
+                // Draw center cross
+                ctx.beginPath();
+                ctx.moveTo(x - scale, y);
+                ctx.lineTo(x + scale, y);
+                ctx.moveTo(x, y - scale);
+                ctx.lineTo(x, y + scale);
+                ctx.stroke();
+                
+                ctx.setLineDash([]);
+                
+                // Draw guide info
+                ctx.fillStyle = 'white';
+                ctx.font = '14px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Solid Drawing: Maintaining consistent volume in 3D space', width/2, 30);
+            },
+            
+            appeal: function() {
+                const canvas = document.getElementById('appeal-canvas');
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw dividing line
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(width/2, 50);
+                ctx.lineTo(width/2, height - 50);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // Draw appealing character
+                ctx.save();
+                ctx.translate(width * 0.25, height * 0.5);
+                
+                // Body
+                ctx.fillStyle = '#3498db';
+                ctx.beginPath();
+                ctx.arc(0, 0, 40, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Eyes
+                ctx.fillStyle = 'white';
+                ctx.beginPath();
+                ctx.arc(-15, -10, 10, 0, Math.PI * 2);
+                ctx.arc(15, -10, 10, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Pupils
+                ctx.fillStyle = 'black';
+                ctx.beginPath();
+                ctx.arc(-15, -10, 5, 0, Math.PI * 2);
+                ctx.arc(15, -10, 5, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Mouth
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(0, 5, 20, 0, Math.PI * 0.8);
+                ctx.stroke();
+                
+                ctx.restore();
+                
+                // Draw complex character
+                ctx.save();
+                ctx.translate(width * 0.75, height * 0.5);
+                
+                // Irregular body shape
+                ctx.fillStyle = '#9b59b6';
+                ctx.beginPath();
+                ctx.moveTo(-30, -30);
+                ctx.lineTo(-40, -10);
+                ctx.lineTo(-35, 20);
+                ctx.lineTo(-20, 30);
+                ctx.lineTo(0, 35);
+                ctx.lineTo(20, 30);
+                ctx.lineTo(35, 20);
+                ctx.lineTo(40, -10);
+                ctx.lineTo(30, -30);
+                ctx.lineTo(10, -35);
+                ctx.lineTo(-10, -35);
+                ctx.closePath();
+                ctx.fill();
+                
+                // Multiple irregular features
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.beginPath();
+                ctx.ellipse(-20, -15, 8, 6, 0, 0, Math.PI * 2);
+                ctx.ellipse(15, -20, 10, 5, 0.5, 0, Math.PI * 2);
+                ctx.ellipse(0, 0, 5, 5, 0, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Confusing mouth
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(-25, 15);
+                ctx.quadraticCurveTo(-10, 25, 5, 15);
+                ctx.quadraticCurveTo(20, 5, 25, 15);
+                ctx.stroke();
+                
+                ctx.restore();
+                
+                // Draw labels
+                ctx.fillStyle = 'black';
+                ctx.font = '14px Arial';
+                ctx.textAlign = 'center';
+                
+                ctx.fillText('Simple & Appealing', width * 0.25, height * 0.5 + 70);
+                ctx.fillText('Complex & Confusing', width * 0.75, height * 0.5 + 70);
+                
+                // Draw characteristics
+                ctx.font = '12px Arial';
+                
+                // Appealing
+                ctx.fillText('Clear silhouette', width * 0.25, height * 0.5 + 90);
+                ctx.fillText('Simple shapes', width * 0.25, height * 0.5 + 110);
+                ctx.fillText('Focused design', width * 0.25, height * 0.5 + 130);
+                
+                // Complex
+                ctx.fillText('Unclear silhouette', width * 0.75, height * 0.5 + 90);
+                ctx.fillText('Too many details', width * 0.75, height * 0.5 + 110);
+                ctx.fillText('Confusing design', width * 0.75, height * 0.5 + 130);
+                
+                // Draw title
+                ctx.font = '14px Arial';
+                ctx.fillText('Appeal: Creating designs that connect with the audience', width/2, 30);
+            }
+        };
+        
+        // Initialize all animations
+        function initializeAnimation(principle) {
+            // Reset the animation
+            resetFunctions[principle]();
+        }
+        
+        // Initialize the first animation (squash)
+        initializeAnimation('squash');
+    </script>
+</body>
+</html>
+                
